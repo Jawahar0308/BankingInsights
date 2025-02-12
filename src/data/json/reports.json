@@ -1,0 +1,42 @@
+[
+    {
+        "month": "January",
+        "total_transactions": 120,
+        "deposits": 80000,
+        "withdrawals": 30000,
+        "service_fees": 2000,
+        "net_balance": 77000
+    },
+    {
+        "month": "February",
+        "total_transactions": 80,
+        "deposits": 60000,
+        "withdrawals": 25000,
+        "service_fees": 1500,
+        "net_balance": 62000
+    },
+    {
+        "month": "March",
+        "total_transactions": 130,
+        "deposits": 85000,
+        "withdrawals": 32000,
+        "service_fees": 2500,
+        "net_balance": 80000
+    },
+    {
+        "month": "April",
+        "total_transactions": 110,
+        "deposits": 70000,
+        "withdrawals": 28000,
+        "service_fees": 1800,
+        "net_balance": 69000
+    },
+    {
+        "month": "May",
+        "total_transactions": 100,
+        "deposits": 75000,
+        "withdrawals": 27000,
+        "service_fees": 1900,
+        "net_balance": 73000
+    }
+]

@@ -1,0 +1,62 @@
+[
+    {
+        "id": "T001",
+        "date": "2025-02-01",
+        "amount": 1500,
+        "account_number": "ACC123456789",
+        "transaction_type": "Deposit",
+        "payment_method": "Bank Transfer",
+        "status": "Completed",
+        "remarks": "Salary deposit"
+    },
+    {
+        "id": "T002",
+        "date": "2025-02-03",
+        "amount": -500,
+        "account_number": "ACC987654321",
+        "transaction_type": "Withdrawal",
+        "payment_method": "ATM",
+        "status": "Completed",
+        "remarks": "ATM withdrawal"
+    },
+    {
+        "id": "T003",
+        "date": "2025-02-05",
+        "amount": 1200,
+        "account_number": "ACC112233445",
+        "transaction_type": "Deposit",
+        "payment_method": "Cheque",
+        "status": "Pending",
+        "remarks": "Cheque deposit"
+    },
+    {
+        "id": "T004",
+        "date": "2025-02-07",
+        "amount": -300,
+        "account_number": "ACC556677889",
+        "transaction_type": "Withdrawal",
+        "payment_method": "Online Transfer",
+        "status": "Failed",
+        "remarks": "Failed transaction"
+    },
+    {
+        "id": "T005",
+        "date": "2025-02-10",
+        "amount": 2200,
+        "account_number": "ACC998877665",
+        "transaction_type": "Deposit",
+        "payment_method": "Bank Transfer",
+        "status": "Completed",
+        "remarks": "Deposit for loan payment"
+    },
+    {
+        "id": "T006",
+        "date": "2025-02-12",
+        "amount": -450,
+        "account_number": "ACC334455667",
+        "transaction_type": "Withdrawal",
+        "payment_method": "Credit Card",
+        "status": "Completed",
+        "remarks": "Credit card payment"
+    }
+]

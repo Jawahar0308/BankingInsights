@@ -1,21 +1,8 @@
-import { useState } from 'react';
-
-export const useFilters = (initialFilter = '') => {
-    const [filter, setFilter] = useState(initialFilter);
-
-    const updateFilter = (newFilter: string) => {
-        setFilter(newFilter);
-    };
-
-    const resetFilter = () => {
-        setFilter('');
-    };
-
-    const filtering = {
-        filter,
-        updateFilter,
-        resetFilter,
-    };
-
-    return filtering;
+export const filterTransactions = (transactions: any[], searchTerm: string) => {
+    return transactions.filter(transaction =>
+        transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.payment_method.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.status.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 };

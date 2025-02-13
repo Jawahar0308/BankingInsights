@@ -1,21 +1,41 @@
-import React from 'react';
-import { Transaction } from '../../types/transactionTypes';
+import React, { useState } from 'react';
 
-interface TableRowProps {
-    transaction: Transaction;
-}
+const TableRow = ({ rowData, onSave }: any) => {
+    const [editing, setEditing] = useState(false);
+    const [editedAmount, setEditedAmount] = useState(rowData.amount);
 
-const TableRow: React.FC<TableRowProps> = ({ transaction }) => {
+    const handleSave = () => {
+        onSave(rowData.id, editedAmount);
+        setEditing(false);
+    };
+
     return (
         <tr>
-            <td>{transaction.id}</td>
-            <td>{transaction.date}</td>
-            <td>{transaction.amount}</td>
-            <td>{transaction.account_number}</td>
-            <td>{transaction.transaction_type}</td>
-            <td>{transaction.payment_method}</td>
-            <td>{transaction.status}</td>
-            <td>{transaction.remarks}</td>
+            <td>{rowData.id}</td>
+            <td>{rowData.date}</td>
+            <td>
+                {editing ? (
+                    <input
+                        type="number"
+                        value={editedAmount}
+                        onChange={(e) => setEditedAmount(Number(e.target.value))}
+                    />
+                ) : (
+                    rowData.amount
+                )}
+            </td>
+            <td>{rowData.account_number}</td>
+            <td>{rowData.transaction_type}</td>
+            <td>{rowData.payment_method}</td>
+            <td>{rowData.status}</td>
+            <td>{rowData.remarks}</td>
+            <td>
+                {editing ? (
+                    <button onClick={handleSave}>Save</button>
+                ) : (
+                    <button onClick={() => setEditing(true)}>Edit</button>
+                )}
+            </td>
         </tr>
     );
 };

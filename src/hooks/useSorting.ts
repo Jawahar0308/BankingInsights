@@ -1,23 +1,11 @@
-import { useState } from 'react';
-
-export const useSorting = (initialSortField = 'date', initialSortOrder = 'asc') => {
-    const [sortField, setSortField] = useState(initialSortField);
-    const [sortOrder, setSortOrder] = useState(initialSortOrder);
-
-    const toggleSortOrder = () => {
-        setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-    };
-
-    const changeSortField = (field: string) => {
-        setSortField(field);
-    };
-
-    const sorting = {
-        sortField,
-        sortOrder,
-        toggleSortOrder,
-        changeSortField,
-    };
-
-    return sorting;
+export const sortTransactions = (transactions: any[], config: { key: string; direction: string }) => {
+    return [...transactions].sort((a, b) => {
+        if (a[config.key] < b[config.key]) {
+            return config.direction === 'asc' ? -1 : 1;
+        }
+        if (a[config.key] > b[config.key]) {
+            return config.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+    });
 };

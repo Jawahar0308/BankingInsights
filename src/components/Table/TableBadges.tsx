@@ -1,29 +1,23 @@
 import React from 'react';
 
-interface TableBadgesProps {
-    status: 'Pending' | 'Completed' | 'Failed';
-}
-
-const TableBadges: React.FC<TableBadgesProps> = ({ status }) => {
-    let badgeColor = '';
+const TableBadges: React.FC<{ status: string }> = ({ status }) => {
+    let badgeClass = '';
 
     switch (status) {
-        case 'Pending':
-            badgeColor = 'bg-yellow-500 text-white';
-            break;
         case 'Completed':
-            badgeColor = 'bg-green-500 text-white';
+            badgeClass = 'bg-green-500';
+            break;
+        case 'Pending':
+            badgeClass = 'bg-yellow-500';
             break;
         case 'Failed':
-            badgeColor = 'bg-red-500 text-white';
+            badgeClass = 'bg-red-500';
             break;
+        default:
+            badgeClass = 'bg-gray-500';
     }
 
-    return (
-        <span className={`px-3 py-1 rounded-full ${badgeColor}`}>
-            {status}
-        </span>
-    );
+    return <span className={`text-white px-2 py-1 rounded ${badgeClass}`}>{status}</span>;
 };
 
 export default TableBadges;

@@ -1,14 +1,8 @@
 [
     {
-        "id": "user_001",
-        "name": "John Doe",
-        "email": "john.doe@example.com",
-        "role": "admin"
-    },
-    {
-        "id": "user_002",
-        "name": "Jane Smith",
-        "email": "jane.smith@example.com",
-        "role": "user"
+        "id": 1,
+        "email": "user@example.com",
+        "password": "123456",
+        "accountNumber": "ACC123456789"
     }
 ]

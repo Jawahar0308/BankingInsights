@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
 
-interface TableExpandableRowProps {
-    details: string;
+interface ExpandableRowProps {
+    rowData: any;
+    children: React.ReactNode;
 }
 
-const TableExpandableRow: React.FC<TableExpandableRowProps> = ({ details }) => {
+const TableExpandableRow: React.FC<ExpandableRowProps> = ({ rowData, children }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <tr>
-            <td colSpan={8}>
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="text-blue-500"
-                >
-                    {isOpen ? 'Hide Details' : 'Show Details'}
-                </button>
-                {isOpen && <div className="mt-2">{details}</div>}
-            </td>
-        </tr>
+        <>
+            <tr onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
+                <td colSpan={7}>
+                    {isOpen ? "Hide Details" : "Show Details"}
+                </td>
+            </tr>
+            {isOpen && (
+                <tr>
+                    <td colSpan={7}>
+                        <div>{children}</div>
+                    </td>
+                </tr>
+            )}
+        </>
     );
 };
 

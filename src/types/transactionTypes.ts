@@ -1,15 +1,16 @@
 export interface Transaction {
-    userId: number;
-    type: string;
+    childTable: any;
+    badges: string[];
+    id: number;  // or number if you use numbers
     amount: number;
-    date: string;
-    description: string;
-    category: string;
-    payment_method: string;
     status: string;
+    payment_method: string;
+    // Badges: string;
+    relatedTransactions?: { id: number; date: string; amount: number; type: string; status: string }[];  // Add relatedTransactions
 }
 
-export interface Login {
+
+export interface LoginUser {
     id: number;
     email: String;
     password: string;

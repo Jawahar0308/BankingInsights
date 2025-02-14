@@ -14,7 +14,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "bank_transfer_logo.png",
+        "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed"
         ],
@@ -46,7 +46,7 @@
             "Cancel Transaction",
             "Add Notes"
         ],
-        "image": "credit_card_logo.png",
+        "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Pending"
         ],
@@ -78,7 +78,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "coffee_shop_logo.png",
+        "image": "src/assets/default_logo.png",
         "badges": [
             "Completed"
         ],
@@ -101,7 +101,7 @@
             "Retry Payment",
             "Add Notes"
         ],
-        "image": "bank_transfer_logo.png",
+        "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Failed"
         ],
@@ -124,7 +124,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "electricity_logo.png",
+        "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed"
         ],
@@ -155,7 +155,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "freelance_logo.png",
+        "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed"
         ],
@@ -178,7 +178,7 @@
             "Cancel Transaction",
             "Add Notes"
         ],
-        "image": "transport_logo.png",
+        "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Pending"
         ],
@@ -201,7 +201,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "dinner_logo.png",
+        "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed"
         ],
@@ -223,7 +223,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "stock_logo.png",
+        "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed"
         ],
@@ -246,7 +246,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "movie_logo.png",
+        "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed"
         ],
@@ -269,7 +269,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "cafe_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed"
         ],
@@ -292,7 +292,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "gym_logo.png",
+        "image": "src/assets/cash_logo.png",
         "badges": [
             "Completed"
         ],
@@ -314,7 +314,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "tax_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed"
         ],
@@ -337,7 +337,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "phone_logo.png",
+        "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed"
         ],
@@ -360,7 +360,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "subscription_logo.png",
+        "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed"
         ],
@@ -382,7 +382,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "freelance_logo.png",
+        "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed"
         ],
@@ -405,7 +405,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "breakfast_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed"
         ],
@@ -428,7 +428,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "concert_logo.png",
+        "image": "src/assets/cash_logo.png",
         "badges": [
             "Completed"
         ],
@@ -450,7 +450,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "interest_logo.png",
+        "image": "src/assets/cash_logo.png",
         "badges": [
             "Completed"
         ],
@@ -473,7 +473,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "clothing_logo.png",
+        "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed"
         ],
@@ -496,7 +496,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "snacks_logo.png",
+        "image": "src/assets/cash_logo.png",
         "badges": [
             "Completed"
         ],
@@ -518,7 +518,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "freelance_logo.png",
+        "image": "src/assets/default_logo.png",
         "badges": [
             "Completed"
         ],
@@ -541,7 +541,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "dinner_logo.png",
+        "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed"
         ],
@@ -564,7 +564,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "books_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed"
         ],
@@ -586,7 +586,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "dividends_logo.png",
+        "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed"
         ],
@@ -609,7 +609,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "coffee_logo.png",
+        "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed"
         ],
@@ -632,7 +632,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "movie_night_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed"
         ],
@@ -654,7 +654,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "freelance_logo.png",
+        "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed"
         ],
@@ -677,7 +677,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "mobile_recharge_logo.png",
+        "image": "src/assets/default_logo.png",
         "badges": [
             "Completed"
         ],
@@ -699,7 +699,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "freelance_project_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed"
         ],
@@ -722,7 +722,7 @@
             "Cancel Transaction",
             "Add Notes"
         ],
-        "image": "gym_logo.png",
+        "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Pending"
         ],
@@ -745,7 +745,7 @@
             "Retry Payment",
             "Add Notes"
         ],
-        "image": "car_repair_logo.png",
+        "image": "src/assets/cash_logo.png",
         "badges": [
             "Failed"
         ],
@@ -767,7 +767,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "tax_refund_logo.png",
+        "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed"
         ],
@@ -790,7 +790,7 @@
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "shopping_logo.png",
+        "image": "src/assets/default_logo.png",
         "badges": [
             "Completed"
         ],
@@ -813,7 +813,7 @@
             "Cancel Transaction",
             "Add Notes"
         ],
-        "image": "restaurant_logo.png",
+        "image": "src/assets/paypal_logo.png",
         "badges": [
             "Pending"
         ],
@@ -835,7 +835,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "freelance_payment_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed"
         ],
@@ -858,7 +858,7 @@
             "Retry Payment",
             "Add Notes"
         ],
-        "image": "movie_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
             "Failed"
         ],
@@ -880,7 +880,7 @@
             "View Details",
             "Add Notes"
         ],
-        "image": "freelance_income_logo.png",
+        "image": "src/assets/cash_logo.png",
         "badges": [
             "Completed"
         ],
@@ -903,7 +903,7 @@
             "Cancel Transaction",
             "Add Notes"
         ],
-        "image": "grocery_logo.png",
+        "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Pending"
         ],
@@ -926,7 +926,7 @@
             "Retry Payment",
             "Add Notes"
         ],
-        "image": "electricity_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
             "Failed"
         ],

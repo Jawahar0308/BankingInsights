@@ -1,42 +1,55 @@
-import React, { useState } from 'react';
+import React from "react";
+import TableAction from "./TableActions";
+import TableImageRenderer from "./TableImageRenderer";
+import TableBadges from "./TableBadges";
+import TableChild from "./TableChild";
 
-const TableRow = ({ rowData, onSave }: any) => {
-    const [editing, setEditing] = useState(false);
-    const [editedAmount, setEditedAmount] = useState(rowData.amount);
-
-    const handleSave = () => {
-        onSave(rowData.id, editedAmount);
-        setEditing(false);
+interface TableRowProps {
+    rowData: {
+        id: string;
+        date: string;
+        amount: string;
+        accountNumber: string;
+        type: string;
+        paymentMethod: string;
+        status: string[];
+        remarks: string;
+        relatedTransactions?: {
+            id: string;
+            date: string;
+            amount: string;
+            type: string;
+            status: string;
+        }[];
     };
+}
 
+const TableRow: React.FC<TableRowProps> = ({ rowData }) => {
     return (
-        <tr>
-            <td>{rowData.id}</td>
-            <td>{rowData.date}</td>
-            <td>
-                {editing ? (
-                    <input
-                        type="number"
-                        value={editedAmount}
-                        onChange={(e) => setEditedAmount(Number(e.target.value))}
-                    />
-                ) : (
-                    rowData.amount
-                )}
-            </td>
-            <td>{rowData.account_number}</td>
-            <td>{rowData.transaction_type}</td>
-            <td>{rowData.payment_method}</td>
-            <td>{rowData.status}</td>
-            <td>{rowData.remarks}</td>
-            <td>
-                {editing ? (
-                    <button onClick={handleSave}>Save</button>
-                ) : (
-                    <button onClick={() => setEditing(true)}>Edit</button>
-                )}
-            </td>
-        </tr>
+        <>
+            <tr className="border-b hover:bg-gray-100">
+                <td className="px-4 py-2">{rowData.id}</td>
+                <td className="px-4 py-2">{rowData.date}</td>
+                <td className="px-4 py-2">${rowData.amount}</td>
+                <td className="px-4 py-2">{rowData.accountNumber}</td>
+                <td className="px-4 py-2">{rowData.type}</td>
+                <td className="px-4 py-2">
+                    <TableImageRenderer method={rowData.paymentMethod} />
+                </td>
+                <td className="px-4 py-2">
+                    <TableBadges statuses={rowData.status} />
+                </td>
+                <td className="px-4 py-2">{rowData.remarks}</td>
+                <td className="px-4 py-2">
+                    <TableAction transactionId={rowData.id} status={rowData.status[0]} />
+                </td>
+            </tr>
+            <tr>
+                <td colSpan={9}>
+                    <TableChild relatedTransactions={rowData.relatedTransactions} />
+                </td>
+            </tr>
+        </>
     );
 };
 

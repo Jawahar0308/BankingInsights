@@ -14,10 +14,14 @@ const transactionsSlice = createSlice({
     initialState,
     reducers: {
         setTransactions: (state, action: PayloadAction<Transaction[]>) => {
-            state.data = action.payload; // Assign payload (array of transactions) to the state
+            state.data = action.payload;
         },
-    },
+        deleteTransaction: (state, action: PayloadAction<number>) => {
+            state.data = state.data.filter(txn => txn.id !== action.payload);
+        }
+    }
+
 });
 
-export const { setTransactions } = transactionsSlice.actions;
+export const { setTransactions, deleteTransaction } = transactionsSlice.actions;
 export default transactionsSlice.reducer;

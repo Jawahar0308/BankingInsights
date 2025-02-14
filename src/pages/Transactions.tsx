@@ -4,7 +4,8 @@ import { setTransactions } from '../redux/slices/transactionsSlice';
 import { RootState } from '../redux/store';
 import { CSVLink } from 'react-csv';
 import { getTransactions } from '../data/transactions';
-import { getNewUserTransactions } from '../data/newUserTransactions'; // Assuming this function is defined
+import { getNewUserTransactions } from '../data/newUserTransactions';
+import TableBadges from "../components/Table/TableBadges";
 import Dropdown from '../components/Dropdown';
 
 // Import the utilities for filtering, sorting, and pagination
@@ -28,16 +29,23 @@ const Transactions: React.FC = () => {
     useEffect(() => {
         try {
             const isRegistered = localStorage.getItem('isRegistered') === 'true'; // Example check
+            console.log('Is user registered:', isRegistered); // Debugging check
 
             if (isRegistered) {
-                dispatch(setTransactions(getTransactions())); // Load transactions for registered user
+                const transactionsData = getTransactions();
+                console.log('Transactions loaded for registered user:', transactionsData);
+                dispatch(setTransactions(transactionsData)); // Load transactions for registered user
             } else {
-                dispatch(setTransactions(getNewUserTransactions())); // Load new user transactions
+                const newUserTransactionsData = getNewUserTransactions();
+                console.log('Transactions loaded for new user:', newUserTransactionsData);
+                dispatch(setTransactions(newUserTransactionsData)); // Load new user transactions
             }
         } catch (err) {
             setError("Failed to load transactions. Please try again later.");
+            console.error("Error loading transactions:", err); // Log error
+        } finally {
+            setLoading(false); // Set loading to false once data is fetched
         }
-        setLoading(false); // Set loading to false once data is fetched
     }, [dispatch]);
 
     if (loading) {
@@ -50,12 +58,15 @@ const Transactions: React.FC = () => {
 
     // Apply filtering
     const filteredTransactions = filterTransactions(transactions, searchTerm);
+    console.log('Filtered Transactions:', filteredTransactions); // Log filtered transactions
 
     // Apply sorting
     const sortedTransactions = sortTransactions(filteredTransactions, sortConfig);
+    console.log('Sorted Transactions:', sortedTransactions); // Log sorted transactions
 
     // Apply pagination
     const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, sortedTransactions);
+    console.log('Current Transactions:', currentTransactions); // Log current transactions
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -120,20 +131,24 @@ const Transactions: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentTransactions.map((transaction) => (
-                                <tr key={transaction.id} className="text-center odd:bg-white even:bg-gray-50">
-                                    <td className="px-4 py-2 border border-gray-400">{transaction.id}</td>
-                                    <td className="px-4 py-2 border border-gray-400">{transaction.date}</td>
-                                    <td className="px-4 py-2 border border-gray-400 text-green-600 font-semibold">₹{transaction.amount}</td>
-                                    <td className="px-4 py-2 border border-gray-400">{transaction.category}</td>
-                                    <td className="px-4 py-2 border border-gray-400">
-                                        <span className={`px-2 py-1 rounded text-white ${transaction.status === 'completed' ? 'bg-green-500' : transaction.status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'}`}>
-                                            {transaction.status}
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
+                            {currentTransactions.map((transaction) => {
+                                console.log(transaction.badges); // Add this line to check badges
+                                return (
+                                    <React.Fragment key={transaction.id}>
+                                        <tr className="text-center odd:bg-white even:bg-gray-50">
+                                            <td className="px-4 py-2 border border-gray-400">{transaction.id}</td>
+                                            <td className="px-4 py-2 border border-gray-400">{transaction.date}</td>
+                                            <td className="px-4 py-2 border border-gray-400 text-green-600 font-semibold">₹{transaction.amount}</td>
+                                            <td className="px-4 py-2 border border-gray-400">{transaction.category}</td>
+                                            <td className="px-4 py-2 border border-gray-400">
+                                                <TableBadges statuses={transaction.badges} />
+                                            </td>
+                                        </tr>
+                                    </React.Fragment>
+                                );
+                            })}
                         </tbody>
+
                     </table>
                 </div>
             </section>

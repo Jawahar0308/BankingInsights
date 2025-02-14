@@ -1,23 +1,31 @@
-import React from 'react';
+import React from "react";
 
-const TableBadges: React.FC<{ status: string }> = ({ status }) => {
-    let badgeClass = '';
+interface TableBadgesProps {
+    statuses: string[];
+}
 
-    switch (status) {
-        case 'Completed':
-            badgeClass = 'bg-green-500';
-            break;
-        case 'Pending':
-            badgeClass = 'bg-yellow-500';
-            break;
-        case 'Failed':
-            badgeClass = 'bg-red-500';
-            break;
-        default:
-            badgeClass = 'bg-gray-500';
+// Define the badge styles within the component
+const badgeStyles: Record<string, string> = {
+    Completed: "bg-green-100 text-green-700",
+    Pending: "bg-yellow-100 text-yellow-700",
+    Failed: "bg-red-100 text-red-700",
+};
+
+const TableBadges: React.FC<TableBadgesProps> = ({ statuses }) => {
+    // If badges are undefined or empty, show a default message
+    if (!statuses || statuses.length === 0) {
+        return <span className="text-gray-500">No Status</span>;
     }
 
-    return <span className={`text-white px-2 py-1 rounded ${badgeClass}`}>{status}</span>;
+    return (
+        <div className="flex space-x-2">
+            {statuses.map((status, index) => (
+                <span key={index} className={`px-2 py-1 text-xs rounded ${badgeStyles[status] || "bg-gray-100 text-gray-700"}`}>
+                    {status}
+                </span>
+            ))}
+        </div>
+    );
 };
 
 export default TableBadges;

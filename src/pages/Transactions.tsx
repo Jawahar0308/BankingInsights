@@ -1,171 +1,261 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import { useDispatch, useSelector } from 'react-redux';
+import { useDragDrop } from '../components/Table/TableDragDrop';
 import { setTransactions } from '../redux/slices/transactionsSlice';
+import { setRowOrder } from '../redux/slices/tableSlice';
 import { RootState } from '../redux/store';
 import { CSVLink } from 'react-csv';
 import { getTransactions } from '../data/transactions';
-import { getNewUserTransactions } from '../data/newUserTransactions';
 import TableBadges from "../components/Table/TableBadges";
-import Dropdown from '../components/Dropdown';
-
-// Import the utilities for filtering, sorting, and pagination
+import TableImageRenderer from '../components/Table/TableImageRenderer';
+import TableChild from '../components/Table/TableChild';
+import TableHeader from '../components/Table/TableHeader';
 import { filterTransactions } from '../hooks/useFilters';
 import { sortTransactions } from '../hooks/useSorting';
 import { paginateTransactions } from '../hooks/usePagination';
+import TableActions from '../components/Table/TableActions';
+import TableCheckbox from '../components/Table/TableCheckbox';
 
 const Transactions: React.FC = () => {
     const dispatch = useDispatch();
     const transactions = useSelector((state: RootState) => state.transactions.data);
     const [searchTerm, setSearchTerm] = useState('');
+    const [columnFilters, setColumnFilters] = useState<Record<string, string>>({
+        id: '',
+        date: '',
+        amount: '',
+        category: '',
+        status: ''
+    });
+    const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [transactionsPerPage] = useState(10);
-    const [sortConfig, setSortConfig] = useState<{ key: string; direction: string }>({
-        key: 'date', // Default sort by date
-        direction: 'desc',
-    });
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const selectedRowsRef = useRef<Set<number>>(new Set());
+    const [selectedRows, setSelectedRows] = useState<Set<number>>(selectedRowsRef.current);
+    const { onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd } = useDragDrop(transactions, (reorderedTransactions) => {
+        dispatch(setTransactions(reorderedTransactions));
+    });
+    const [columnWidths, setColumnWidths] = useState<Record<string, number>>({
+        checkbox: 0,  // Fixed width for checkbox column
+        id: 60,      // Fixed width for Transaction ID column
+        date: 180,
+        amount: 120,
+        category: 200,
+        status: 150,
+        remarks: 150
+    });
 
-    useEffect(() => {
-        try {
-            const isRegistered = localStorage.getItem('isRegistered') === 'true'; // Example check
-            console.log('Is user registered:', isRegistered); // Debugging check
-
-            if (isRegistered) {
-                const transactionsData = getTransactions();
-                console.log('Transactions loaded for registered user:', transactionsData);
-                dispatch(setTransactions(transactionsData)); // Load transactions for registered user
-            } else {
-                const newUserTransactionsData = getNewUserTransactions();
-                console.log('Transactions loaded for new user:', newUserTransactionsData);
-                dispatch(setTransactions(newUserTransactionsData)); // Load new user transactions
-            }
-        } catch (err) {
-            setError("Failed to load transactions. Please try again later.");
-            console.error("Error loading transactions:", err); // Log error
-        } finally {
-            setLoading(false); // Set loading to false once data is fetched
-        }
-    }, [dispatch]);
-
-    if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
-    }
-
-    if (error) {
-        return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
-    }
-
-    // Apply filtering
-    const filteredTransactions = filterTransactions(transactions, searchTerm);
-    console.log('Filtered Transactions:', filteredTransactions); // Log filtered transactions
-
-    // Apply sorting
-    const sortedTransactions = sortTransactions(filteredTransactions, sortConfig);
-    console.log('Sorted Transactions:', sortedTransactions); // Log sorted transactions
-
-    // Apply pagination
-    const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, sortedTransactions);
-    console.log('Current Transactions:', currentTransactions); // Log current transactions
-
-    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-    // Handle sort click
-    const handleSort = (key: string) => {
-        const direction = sortConfig.key === key && sortConfig.direction === 'asc' ? 'desc' : 'asc';
-        setSortConfig({ key, direction });
+    // Handle column resizing
+    const handleColumnResize = (key: string, newWidth: number) => {
+        setColumnWidths((prev) => ({ ...prev, [key]: newWidth }));
     };
 
+    // Load transactions on mount
+    useEffect(() => {
+        try {
+            const data = getTransactions();
+            dispatch(setTransactions(data));
+            dispatch(setRowOrder(data.map(t => t.id.toString())));
+        } catch (err) {
+            setError("Failed to load transactions. Please try again later.");
+        }
+        setLoading(false);
+    }, [dispatch]);
+
+    // Handle select all rows
+    const handleSelectAll = useCallback((checked: boolean) => {
+        const newSelectedRows = checked ?
+            new Set<number>(transactions.map(t => t.id)) :
+            new Set<number>();
+        selectedRowsRef.current = newSelectedRows;
+        setSelectedRows(newSelectedRows);
+    }, [transactions]);
+
+    // Handle individual row selection
+    const handleRowSelect = useCallback((id: number, checked: boolean) => {
+        const newSelectedRows = new Set(selectedRowsRef.current);
+        checked ? newSelectedRows.add(id) : newSelectedRows.delete(id);
+        selectedRowsRef.current = newSelectedRows;
+        setSelectedRows(new Set(newSelectedRows));
+    }, []);
+
+    // Handle delete selected rows
+    const handleDeleteSelected = () => {
+        setIsDeleteModalOpen(true);
+    };
+
+    // Confirm deletion of selected rows
+    const confirmDelete = () => {
+        const remainingTransactions = transactions.filter(
+            (t: { id: number }) => !selectedRows.has(t.id)
+        );
+        dispatch(setTransactions(remainingTransactions));
+        setSelectedRows(new Set());
+        setIsDeleteModalOpen(false);
+    };
+
+    if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
+    if (transactions.length === 0) return <div className="flex justify-center items-center h-screen text-gray-500">No transactions available</div>;
+
+    // Filter, sort and paginate transactions
+    const filteredTransactions = filterTransactions(transactions, searchTerm, columnFilters);
+    const sortedTransactions = sortConfig ?
+        sortTransactions(filteredTransactions, sortConfig) :
+        filteredTransactions;
+    const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, sortedTransactions);
+
     return (
-        <div className="dashboard p-6 bg-gray-100 min-h-screen">
-            <h1 className="text-3xl font-bold mb-4 text-center">Transactions</h1>
-
-            {/* Search & Export */}
-            <div className="flex justify-between mb-4">
-                <input
-                    type="text"
-                    placeholder="Search by Description, Category, Payment Method, or Status"
-                    className="p-2 border rounded-lg w-1/3"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <CSVLink
-                    data={transactions}
-                    filename="transactions.csv"
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                >
-                    Export CSV
-                </CSVLink>
-            </div>
-
-            {/* Status Legend */}
-            <section className="status-legend mb-4">
-                <div className="flex space-x-4">
-                    <div className="flex items-center">
-                        <span className="block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-                        <span>Completed</span>
-                    </div>
-                    <div className="flex items-center">
-                        <span className="block w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
-                        <span>Pending</span>
-                    </div>
-                    <div className="flex items-center">
-                        <span className="block w-3 h-3 bg-red-500 rounded-full mr-2"></span>
-                        <span>Failed</span>
-                    </div>
-                </div>
-            </section>
-
-            {/* Transactions Table */}
-            <section className="transactions bg-white p-4 rounded-lg shadow-lg mb-6">
-                <h2 className="text-xl font-semibold mb-3">Recent Transactions</h2>
-                <div className="overflow-x-auto">
-                    <table className="table-auto w-full border-collapse border border-gray-400">
-                        <thead className="bg-gray-200">
-                            <tr>
-                                <th className="px-4 py-2 border border-gray-400 cursor-pointer" onClick={() => handleSort('id')}>Transaction ID</th>
-                                <th className="px-4 py-2 border border-gray-400 cursor-pointer" onClick={() => handleSort('date')}>Date</th>
-                                <th className="px-4 py-2 border border-gray-400 cursor-pointer" onClick={() => handleSort('amount')}>Amount</th>
-                                <th className="px-4 py-2 border border-gray-400 cursor-pointer" onClick={() => handleSort('category')}>Category</th>
-                                <th className="px-4 py-2 border border-gray-400 cursor-pointer" onClick={() => handleSort('status')}>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentTransactions.map((transaction) => {
-                                console.log(transaction.badges); // Add this line to check badges
-                                return (
-                                    <React.Fragment key={transaction.id}>
-                                        <tr className="text-center odd:bg-white even:bg-gray-50">
-                                            <td className="px-4 py-2 border border-gray-400">{transaction.id}</td>
-                                            <td className="px-4 py-2 border border-gray-400">{transaction.date}</td>
-                                            <td className="px-4 py-2 border border-gray-400 text-green-600 font-semibold">₹{transaction.amount}</td>
-                                            <td className="px-4 py-2 border border-gray-400">{transaction.category}</td>
-                                            <td className="px-4 py-2 border border-gray-400">
-                                                <TableBadges statuses={transaction.badges} />
-                                            </td>
-                                        </tr>
-                                    </React.Fragment>
-                                );
-                            })}
-                        </tbody>
-
-                    </table>
-                </div>
-            </section>
-
-            {/* Pagination Controls */}
-            <div className="pagination flex justify-center space-x-2 flex-wrap">
-                {Array.from({ length: Math.ceil(filteredTransactions.length / transactionsPerPage) }).map((_, index) => (
-                    <button
-                        key={index + 1}
-                        onClick={() => paginate(index + 1)}
-                        className={`px-4 py-2 border rounded-lg ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+        <>
+            <div className="dashboard p-4 md:p-6 bg-gray-100 min-h-screen">
+                {/* Search & Export Section */}
+                <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-2 md:space-y-0">
+                    <input
+                        type="text"
+                        placeholder="Search transactions..."
+                        className="p-2 border rounded-lg w-full md:w-1/3"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <CSVLink
+                        data={transactions}
+                        filename="transactions.csv"
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 w-full md:w-auto text-center"
                     >
-                        {index + 1}
-                    </button>
-                ))}
+                        Export CSV
+                    </CSVLink>
+                </div>
+
+                {/* Transactions Table */}
+                <section className="transactions bg-white p-4 rounded-lg shadow-lg mb-6">
+                    {transactions.length === 0 ? (
+                        <div className="flex justify-center items-center h-64 text-gray-500">
+                            No transactions to display
+                        </div>
+                    ) : (
+                        <div>
+                            <div className="flex justify-between items-center mb-3">
+                                <h2 className="text-xl font-semibold">Recent Transactions</h2>
+                                <button
+                                    onClick={handleDeleteSelected}
+                                    disabled={selectedRows.size === 0}
+                                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                >
+                                    Delete Selected
+                                </button>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                                <table className="table-auto w-full min-w-[800px] border-collapse border border-gray-400">
+                                    <TableHeader
+                                        sortConfig={sortConfig}
+                                        handleSort={(key) => setSortConfig({
+                                            key,
+                                            direction: sortConfig?.key === key && sortConfig?.direction === 'asc' ? 'desc' : 'asc'
+                                        })}
+                                        columnFilters={columnFilters}
+                                        handleColumnFilter={(column, value) => setColumnFilters(prev => ({
+                                            ...prev,
+                                            [column]: value
+                                        }))}
+                                        onSelectAll={handleSelectAll}
+                                        isAllSelected={selectedRows.size === transactions.length}
+                                        isModal={isDeleteModalOpen}
+                                        onColumnResize={handleColumnResize}
+                                        columnWidths={columnWidths}
+                                    />
+
+                                    <tbody>
+                                        {currentTransactions.map((transaction) => (
+                                            <React.Fragment key={transaction.id}>
+                                                <tr
+                                                    className={`text-center odd:bg-white even:bg-gray-50 cursor-move`}
+                                                    draggable
+                                                    onDragStart={(e) => onDragStart(e, transaction.id)}
+                                                    onDragOver={onDragOver}
+                                                    onDragLeave={onDragLeave}
+                                                    onDrop={(e) => onDrop(e, transaction.id)}
+                                                    onDragEnd={onDragEnd}
+                                                >
+                                                    {/* Sticky Checkbox Column */}
+                                                    <td className={`${isDeleteModalOpen ? 'z-0' : 'sticky left-0 z-10'} bg-white px-4 py-2 border border-gray-400 min-w-[50px]`}>
+                                                        <TableCheckbox
+                                                            isChecked={selectedRows.has(transaction.id)}
+                                                            onChange={(checked) => handleRowSelect(transaction.id, checked)}
+                                                        />
+                                                    </td>
+
+                                                    <td className={`${isDeleteModalOpen ? 'z-0' : 'sticky left-[50px] z-10'} bg-white px-4 py-2 border border-gray-400 min-w-[120px]`}>
+                                                        {transaction.id}
+                                                    </td>
+
+                                                    {/* Other Columns */}
+                                                    <td className="px-4 py-2 border border-gray-400">{transaction.date}</td>
+                                                    <td className="px-4 py-2 border border-gray-400 text-green-600 font-semibold">
+                                                        ₹{transaction.amount}
+                                                    </td>
+                                                    <td className="px-4 py-2 border border-gray-400">{transaction.category}</td>
+                                                    <td className="px-4 py-2 border border-gray-400">
+                                                        <TableBadges statuses={[transaction.badges[0]]} />
+                                                    </td>
+                                                    <td className="px-4 py-2 border border-gray-400">
+                                                        <TableActions
+                                                            transaction={transaction}
+                                                            isExpanded={expandedRow === transaction.id}
+                                                            onToggleExpand={(id) => setExpandedRow(expandedRow === id ? null : id)}
+                                                        />
+                                                    </td>
+                                                </tr>
+
+                                                {expandedRow === transaction.id && (
+                                                    <tr className="bg-gray-100">
+                                                        <td colSpan={7} className="border border-gray-400 p-4">
+                                                            <div className="flex items-center space-x-4">
+                                                                <TableImageRenderer method={transaction.payment_method} />
+                                                                <div>{transaction.payment_method} </div>
+                                                            </div>
+                                                            <div className="flex justify-start mt-2">
+                                                                <TableBadges statuses={transaction.badges} />
+                                                            </div>
+                                                            <TableChild relatedTransactions={transaction.childTable?.relatedTransactions ?? []} />
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </React.Fragment>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+                </section>
+
+                {/* Pagination */}
+                <div className="pagination flex justify-center space-x-2 flex-wrap">
+                    {Array.from({ length: Math.ceil(filteredTransactions.length / transactionsPerPage) }).map((_, index) => (
+                        <button
+                            key={index + 1}
+                            onClick={() => setCurrentPage(index + 1)}
+                            className={`px-4 py-2 border rounded-lg ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                </div>
             </div>
-        </div>
+
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={confirmDelete}
+                selectedCount={selectedRows.size}
+            />
+        </>
     );
 };
 

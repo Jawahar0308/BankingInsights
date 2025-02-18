@@ -8,7 +8,6 @@
         "description": "Salary deposit",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -16,7 +15,8 @@
         ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": [
@@ -40,7 +40,6 @@
         "description": "Grocery shopping",
         "category": "food",
         "payment_method": "credit card",
-        "status": "pending",
         "action": [
             "View Details",
             "Cancel Transaction",
@@ -72,7 +71,6 @@
         "description": "Coffee shop",
         "category": "food",
         "payment_method": "cash",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -80,7 +78,8 @@
         ],
         "image": "src/assets/default_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -95,7 +94,6 @@
         "description": "Internet bill",
         "category": "utilities",
         "payment_method": "bank transfer",
-        "status": "failed",
         "action": [
             "View Details",
             "Retry Payment",
@@ -118,7 +116,6 @@
         "description": "Electricity bill",
         "category": "utilities",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -126,7 +123,8 @@
         ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": [
@@ -150,14 +148,14 @@
         "description": "Freelance payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -172,7 +170,6 @@
         "description": "Public transport",
         "category": "transport",
         "payment_method": "cash",
-        "status": "pending",
         "action": [
             "View Details",
             "Cancel Transaction",
@@ -195,7 +192,6 @@
         "description": "Dinner with friends",
         "category": "food",
         "payment_method": "credit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -203,7 +199,8 @@
         ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -218,14 +215,14 @@
         "description": "Stock dividends",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -240,7 +237,6 @@
         "description": "Movie tickets",
         "category": "entertainment",
         "payment_method": "credit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -248,7 +244,8 @@
         ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -263,7 +260,6 @@
         "description": "Lunch at cafe",
         "category": "food",
         "payment_method": "cash",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -271,7 +267,8 @@
         ],
         "image": "src/assets/upi_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -286,7 +283,6 @@
         "description": "Gym membership",
         "category": "health",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -294,7 +290,8 @@
         ],
         "image": "src/assets/cash_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -309,14 +306,14 @@
         "description": "Tax refund",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/upi_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -331,7 +328,6 @@
         "description": "Phone bill",
         "category": "utilities",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -339,7 +335,8 @@
         ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -354,7 +351,6 @@
         "description": "Online subscription",
         "category": "entertainment",
         "payment_method": "credit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -362,7 +358,8 @@
         ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -377,14 +374,14 @@
         "description": "Freelance project payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -399,7 +396,6 @@
         "description": "Breakfast",
         "category": "food",
         "payment_method": "cash",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -407,7 +403,8 @@
         ],
         "image": "src/assets/upi_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -422,7 +419,6 @@
         "description": "Concert tickets",
         "category": "entertainment",
         "payment_method": "credit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -430,7 +426,8 @@
         ],
         "image": "src/assets/cash_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -445,14 +442,14 @@
         "description": "Interest earned",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/cash_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -467,7 +464,6 @@
         "description": "Clothing purchase",
         "category": "shopping",
         "payment_method": "credit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -475,7 +471,8 @@
         ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -490,7 +487,6 @@
         "description": "Snacks",
         "category": "food",
         "payment_method": "cash",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -498,7 +494,8 @@
         ],
         "image": "src/assets/cash_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -513,14 +510,14 @@
         "description": "Freelance payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/default_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -535,7 +532,6 @@
         "description": "Dinner",
         "category": "food",
         "payment_method": "credit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -543,7 +539,8 @@
         ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -558,7 +555,6 @@
         "description": "Books",
         "category": "shopping",
         "payment_method": "cash",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -566,7 +562,8 @@
         ],
         "image": "src/assets/upi_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -581,14 +578,14 @@
         "description": "Dividends",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -603,7 +600,6 @@
         "description": "Coffee",
         "category": "food",
         "payment_method": "cash",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -611,7 +607,8 @@
         ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -626,7 +623,6 @@
         "description": "Movie night",
         "category": "entertainment",
         "payment_method": "credit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -634,7 +630,8 @@
         ],
         "image": "src/assets/upi_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -649,14 +646,14 @@
         "description": "Freelance payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -671,7 +668,6 @@
         "description": "Mobile recharge",
         "category": "utilities",
         "payment_method": "credit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -679,7 +675,8 @@
         ],
         "image": "src/assets/default_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -694,14 +691,14 @@
         "description": "Freelance project",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/upi_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -716,7 +713,6 @@
         "description": "Gym membership",
         "category": "fitness",
         "payment_method": "bank transfer",
-        "status": "pending",
         "action": [
             "View Details",
             "Cancel Transaction",
@@ -739,7 +735,6 @@
         "description": "Car repair",
         "category": "transport",
         "payment_method": "cash",
-        "status": "failed",
         "action": [
             "View Details",
             "Retry Payment",
@@ -762,14 +757,14 @@
         "description": "Tax refund",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -784,7 +779,6 @@
         "description": "Online shopping",
         "category": "shopping",
         "payment_method": "credit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
@@ -792,7 +786,8 @@
         ],
         "image": "src/assets/default_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -807,7 +802,6 @@
         "description": "Restaurant dinner",
         "category": "food",
         "payment_method": "debit card",
-        "status": "pending",
         "action": [
             "View Details",
             "Cancel Transaction",
@@ -830,14 +824,14 @@
         "description": "Freelance project payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/upi_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -852,7 +846,6 @@
         "description": "Movie tickets",
         "category": "entertainment",
         "payment_method": "credit card",
-        "status": "failed",
         "action": [
             "View Details",
             "Retry Payment",
@@ -875,14 +868,14 @@
         "description": "Freelance income",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
         "image": "src/assets/cash_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -897,7 +890,6 @@
         "description": "Grocery shopping",
         "category": "food",
         "payment_method": "debit card",
-        "status": "pending",
         "action": [
             "View Details",
             "Cancel Transaction",
@@ -920,7 +912,6 @@
         "description": "Electric bill",
         "category": "utilities",
         "payment_method": "bank transfer",
-        "status": "failed",
         "action": [
             "View Details",
             "Retry Payment",
@@ -943,14 +934,14 @@
         "description": "Salary credit",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
-        "image": "salary_logo.png",
+        "image": "src/assets/bank_transfer_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -965,13 +956,12 @@
         "description": "Restaurant bill",
         "category": "food",
         "payment_method": "credit card",
-        "status": "pending",
         "action": [
             "View Details",
             "Cancel Transaction",
             "Add Notes"
         ],
-        "image": "restaurant_bill_logo.png",
+        "image": "src/assets/cash_logo.png",
         "badges": [
             "Pending"
         ],
@@ -988,15 +978,15 @@
         "description": "Home appliance",
         "category": "shopping",
         "payment_method": "debit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "home_appliance_logo.png",
+        "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -1011,14 +1001,14 @@
         "description": "Freelance project payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
-        "image": "freelance_payment_project_logo.png",
+        "image": "src/assets/default_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -1033,15 +1023,15 @@
         "description": "Coffee shop",
         "category": "food",
         "payment_method": "cash",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "coffee_shop_logo.png",
+        "image": "src/assets/paypal_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -1056,14 +1046,14 @@
         "description": "Freelance project",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
-        "image": "freelance_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -1078,13 +1068,12 @@
         "description": "Public transport",
         "category": "transport",
         "payment_method": "credit card",
-        "status": "pending",
         "action": [
             "View Details",
             "Cancel Transaction",
             "Add Notes"
         ],
-        "image": "public_transport_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
             "Pending"
         ],
@@ -1101,14 +1090,14 @@
         "description": "Freelance income",
         "category": "income",
         "payment_method": "bank transfer",
-        "status": "completed",
         "action": [
             "View Details",
             "Add Notes"
         ],
-        "image": "freelance_income_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -1123,15 +1112,15 @@
         "description": "Dinner with friends",
         "category": "food",
         "payment_method": "credit card",
-        "status": "completed",
         "action": [
             "View Details",
             "Refund/Reversal",
             "Add Notes"
         ],
-        "image": "dinner_with_friends_logo.png",
+        "image": "src/assets/upi_logo.png",
         "badges": [
-            "Completed"
+            "Completed",
+            "Verified"
         ],
         "childTable": {
             "relatedTransactions": []
@@ -1146,13 +1135,12 @@
         "description": "Online course fee",
         "category": "education",
         "payment_method": "bank transfer",
-        "status": "failed",
         "action": [
             "View Details",
             "Retry Payment",
             "Add Notes"
         ],
-        "image": "online_course_logo.png",
+        "image": "src/assets/cash_logo.png",
         "badges": [
             "Failed"
         ],

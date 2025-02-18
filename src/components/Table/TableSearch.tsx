@@ -1,12 +1,17 @@
 import React from 'react';
 
-const TableSearch: React.FC<{ onSearch: (value: string) => void }> = ({ onSearch }) => {
+interface TableSearchProps {
+    onSearch: (value: string) => void;
+    placeholder?: string;
+}
+
+const TableSearch: React.FC<TableSearchProps> = ({ onSearch, placeholder }) => {
     return (
         <input
             type="text"
-            placeholder="Search..."
+            placeholder={placeholder || "Search..."}
             onChange={(e) => onSearch(e.target.value)}
-            className="p-2 border rounded"
+            className="p-1 border rounded text-sm w-full"
         />
     );
 };

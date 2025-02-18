@@ -1,9 +1,34 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { moveRow } from '../redux/slices/tableSlice';
 
-export const useDragDrop = (moveRow: (fromIndex: number, toIndex: number) => void) => {
-    const moveRowHandler = useCallback((fromIndex: number, toIndex: number) => {
-        moveRow(fromIndex, toIndex);
-    }, [moveRow]);
+export const useDragDrop = () => {
+    const dispatch = useDispatch();
+    const [draggedRowId, setDraggedRowId] = useState<string | null>(null);
 
-    return { moveRowHandler };
+    const handleDragStart = useCallback((rowId: string) => {
+        setDraggedRowId(rowId);
+    }, []);
+
+    const handleDragEnd = useCallback(() => {
+        setDraggedRowId(null);
+    }, []);
+
+    const handleDrop = useCallback((targetRowId: string, currentRowOrder: string[]) => {
+        if (!draggedRowId) return;
+
+        const fromIndex = currentRowOrder.indexOf(draggedRowId);
+        const toIndex = currentRowOrder.indexOf(targetRowId);
+
+        if (fromIndex !== toIndex) {
+            dispatch(moveRow({ fromIndex, toIndex }));
+        }
+    }, [draggedRowId, dispatch]);
+
+    return {
+        draggedRowId,
+        handleDragStart,
+        handleDragEnd,
+        handleDrop
+    };
 };

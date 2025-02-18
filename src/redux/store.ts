@@ -1,20 +1,27 @@
-import { configureStore } from '@reduxjs/toolkit';
-import transactionsReducer from './slices/transactionsSlice';
-import reportsReducer from './slices/reportsSlice';
-import tableReducer from './slices/tableSlice';
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
 
-const store = configureStore({
+export type AppThunk<ReturnType = void> = ThunkAction<
+    ReturnType,
+    RootState,
+    unknown,
+    Action<string>
+>;
+import transactionsReducer from './slices/transactionsSlice';
+import tableReducer from './slices/tableSlice';
+import authReducer from './slices/authSlice';
+
+export const store = configureStore({
     reducer: {
         transactions: transactionsReducer,
-        reports: reportsReducer,
         table: tableReducer,
+        auth: authReducer,
     },
 });
 
-// RootState is inferred from the store's state shape
 export type RootState = ReturnType<typeof store.getState>;
-
-// Dispatch type for dispatching actions
 export type AppDispatch = typeof store.dispatch;
+export const useAppDispatch: () => AppDispatch = useDispatch;
+
 
 export default store;

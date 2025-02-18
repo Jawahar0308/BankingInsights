@@ -1,31 +1,49 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import users from "../data/json/users.json"; // Import users.json
+import { useDispatch } from "react-redux";
+import { login, markAsExistingUser } from "../redux/slices/authSlice";
+import users from "../data/json/users.json";
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState<string | null>(null);
+    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Log the imported users.json data to check if it's loaded correctly
-        console.log("Users from users.json:", users);
+        // Clear previous errors
+        setErrors({});
 
-        // Compare input email and password with data from users.json
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }));
+            return;
+        }
+
+        // Validate password
+        if (password.length < 6) {
+            setErrors(prev => ({ ...prev, password: 'Password must be at least 6 characters' }));
+            return;
+        }
+
         const registeredUser = users.find(
             (user: { email: string; password: string }) =>
                 user.email === email && user.password === password
         );
 
         if (registeredUser) {
-            console.log("Login successful!");
+            dispatch(login({
+                email: email,
+                isNewUser: false
+            }));
+            dispatch(markAsExistingUser());
             navigate("/dashboard");
         } else {
-            setError("Invalid email or password.");
-            console.log("Invalid login attempt");
+            setErrors({ email: 'Invalid email or password', password: 'Invalid email or password' });
         }
     };
 
@@ -42,12 +60,20 @@ const Login: React.FC = () => {
                         </label>
                         <input
                             type="email"
-                            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                            className={`w-full p-3 mt-1 border ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                } rounded-lg focus:outline-none`}
                             placeholder="Enter your email"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                setErrors(prev => ({ ...prev, email: '' }));
+                            }}
                             required
+                            autoComplete="new-password"
+                            readOnly
+                            onFocus={(e) => e.target.removeAttribute('readOnly')}
                         />
+                        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700">
@@ -55,29 +81,36 @@ const Login: React.FC = () => {
                         </label>
                         <input
                             type="password"
-                            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                            className={`w-full p-3 mt-1 border ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                } rounded-lg focus:outline-none`}
                             placeholder="Enter your password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => {
+                                setPassword(e.target.value);
+                                setErrors(prev => ({ ...prev, password: '' }));
+                            }}
                             required
+                            autoComplete="new-password"
+                            readOnly
+                            onFocus={(e) => e.target.removeAttribute('readOnly')}
                         />
+                        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
                     </div>
-                    {error && <p className="text-red-500 text-sm text-center">{error}</p>}
                     <button
                         type="submit"
-                        className="w-full bg-blue-500 text-white font-semibold py-3 rounded-lg hover:bg-blue-600 transition duration-300 shadow-md"
+                        className="w-full bg-blue-500 text-white font-semibold py-3 rounded-lg cursor-pointer"
                     >
                         Login
                     </button>
                 </form>
                 <p className="mt-4 text-center text-gray-600">
                     Don't have an account?{" "}
-                    <span
-                        className="text-blue-500 font-medium cursor-pointer hover:underline"
+                    <button
+                        className="text-blue-500 font-medium bg-transparent border-none p-0 cursor-pointer"
                         onClick={() => navigate("/register")}
                     >
                         Register here
-                    </span>
+                    </button>
                 </p>
             </div>
         </div>

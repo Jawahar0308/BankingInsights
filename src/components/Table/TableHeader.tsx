@@ -34,7 +34,10 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     // const toggleSearchVisibility = (columnKey: string) => {
     //     setVisibleSearch((prev) => ({ ...prev, [columnKey]: !prev[columnKey] }));
     // };
-
+    console.log("col-width checkbox ", columnWidths.checkbox);
+    console.log("col-width id ", columnWidths.id);
+    console.log("col-width date ", columnWidths.date);
+    console.log("col-width amount ", columnWidths.amount);
     const handleMouseDown = (e: React.MouseEvent, columnKey: string) => {
         e.stopPropagation();
         resizingColumn.current = columnKey;
@@ -71,17 +74,19 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     };
 
     return (
-        <thead>
+        <thead className='w-full overflow-x-auto relative'>
             <tr>
                 {/* Checkbox Column */}
                 <th
                     style={{
                         width: `${columnWidths.checkbox}px`,
-                        position: isModal ? 'static' : 'sticky',
-                        left: isModal ? 'auto' : `${columnWidths.checkbox}px`,
-                        zIndex: isModal ? 'auto' : 20,
+                        position: isModal ? "static" : "sticky",
+                        left: `${columnWidths.checkbox}px`, // Fixes first column
+                        zIndex: isModal ? "auto" : 10, // Keeps above other elements
+                        background: "white",
+                        boxShadow: "1px 0 0 0 #9ca3af"
                     }}
-                    className="px-4 py-2 border border-gray-400"
+                    className="px-4 py-2 border border-gray-400 bg-white"
                 >
                     <TableCheckbox isChecked={isAllSelected} onChange={onSelectAll} />
                 </th>
@@ -89,10 +94,17 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                 {/* Transaction ID Column */}
                 <th
                     key="id"
-                    className="px-4 py-2 border border-gray-400 relative"
-                    style={{ width: `${columnWidths.id}px`, minWidth: '50px' }}
+                    className="px-4 py-2 border border-gray-400 bg-white"
+                    style={{
+                        width: `${columnWidths.id}px`,
+                        position: isModal ? "static" : "sticky",
+                        left: `${columnWidths.id}px`, // Adjusts based on previous column width
+                        zIndex: isModal ? "auto" : 10, // Keeps it above other table rows
+                        background: "white",
+                        boxShadow: "1px 0 0 0 #9ca3af"
+                    }}
                 >
-                    <div className="flex flex-col items-center justify-center">
+                    <div className="flex flex-col items-center justify-center left-0">
                         <div className="cursor-pointer font-semibold text-gray-700" onClick={() => handleSort('id')}>
                             Transaction ID {getSortIndicator('id')}
                         </div>

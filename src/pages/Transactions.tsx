@@ -42,7 +42,7 @@ const Transactions: React.FC = () => {
     });
     const [columnWidths, setColumnWidths] = useState<Record<string, number>>({
         checkbox: 0,  // Fixed width for checkbox column
-        id: 60,      // Fixed width for Transaction ID column
+        id: 50,      // Fixed width for Transaction ID column
         date: 180,
         amount: 120,
         category: 200,
@@ -144,13 +144,13 @@ const Transactions: React.FC = () => {
                                 <button
                                     onClick={handleDeleteSelected}
                                     disabled={selectedRows.size === 0}
-                                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
                                 >
                                     Delete Selected
                                 </button>
                             </div>
 
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto relative">
                                 <table className="table-auto w-full min-w-[800px] border-collapse border border-gray-400">
                                     <TableHeader
                                         sortConfig={sortConfig}
@@ -170,7 +170,7 @@ const Transactions: React.FC = () => {
                                         columnWidths={columnWidths}
                                     />
 
-                                    <tbody>
+                                    <tbody className='w-full overflow-x-auto'>
                                         {currentTransactions.map((transaction) => (
                                             <React.Fragment key={transaction.id}>
                                                 <tr
@@ -183,14 +183,20 @@ const Transactions: React.FC = () => {
                                                     onDragEnd={onDragEnd}
                                                 >
                                                     {/* Sticky Checkbox Column */}
-                                                    <td className={`${isDeleteModalOpen ? 'z-0' : 'sticky left-0 z-10'} bg-white px-4 py-2 border border-gray-400 min-w-[50px]`}>
+                                                    <td
+                                                        className={`${isDeleteModalOpen ? 'z-0' : 'sticky left-0 z-10'} bg-white px-4 py-2 border border-gray-400 min-w-[50px]`}
+                                                        style={{ boxShadow: "1px 0 0 0 #9ca3af" }}
+                                                    >
                                                         <TableCheckbox
                                                             isChecked={selectedRows.has(transaction.id)}
                                                             onChange={(checked) => handleRowSelect(transaction.id, checked)}
                                                         />
                                                     </td>
 
-                                                    <td className={`${isDeleteModalOpen ? 'z-0' : 'sticky left-[50px] z-10'} bg-white px-4 py-2 border border-gray-400 min-w-[120px]`}>
+                                                    <td
+                                                        className={`${isDeleteModalOpen ? 'z-0' : 'sticky left-[50px] z-10'} bg-white px-4 py-2 border border-gray-400 min-w-[120px]`}
+                                                        style={{ boxShadow: "1px 0 0 0 #9ca3af" }}
+                                                    >
                                                         {transaction.id}
                                                     </td>
 

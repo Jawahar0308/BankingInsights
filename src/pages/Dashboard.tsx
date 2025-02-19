@@ -47,7 +47,6 @@ const Dashboard: React.FC = () => {
     const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
 
     useEffect(() => {
-        // Cast transactionsData to `unknown` and then to `Transaction[]` type
         const transactions = transactionsData as unknown as Transaction[];
 
         // Filter transactions by type

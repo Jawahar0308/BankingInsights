@@ -32,7 +32,7 @@ const TableChild: React.FC<TableChildProps> = ({ relatedTransactions }) => {
         <div className="mt-4">
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 mb-2"
+                className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 mb-2 cursor-pointer"
             >
                 {isExpanded ? 'Hide' : 'Show'} Related Transactions
                 <svg

@@ -27,17 +27,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     const resizingColumn = useRef<string | null>(null);
     const startX = useRef<number>(0);
     const startWidth = useRef<number>(0);
-
-    // // Local state to track search box visibility per column:
-    // const [visibleSearch, setVisibleSearch] = useState<{ [key: string]: boolean }>({});
-
-    // const toggleSearchVisibility = (columnKey: string) => {
-    //     setVisibleSearch((prev) => ({ ...prev, [columnKey]: !prev[columnKey] }));
-    // };
-    console.log("col-width checkbox ", columnWidths.checkbox);
-    console.log("col-width id ", columnWidths.id);
-    console.log("col-width date ", columnWidths.date);
-    console.log("col-width amount ", columnWidths.amount);
+    
     const handleMouseDown = (e: React.MouseEvent, columnKey: string) => {
         e.stopPropagation();
         resizingColumn.current = columnKey;

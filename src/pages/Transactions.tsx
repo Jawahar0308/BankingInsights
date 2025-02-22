@@ -30,7 +30,7 @@ const Transactions: React.FC = () => {
     });
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [transactionsPerPage] = useState(10);
+    const [transactionsPerPage, setTransactionsPerPage] = useState(10); // Default to 10
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -114,7 +114,10 @@ const Transactions: React.FC = () => {
     const sortedTransactions = sortConfig ?
         sortTransactions(filteredTransactions, sortConfig) :
         filteredTransactions;
+    console.log("Current Page:", currentPage);
+    console.log("Transactions Per Page:", transactionsPerPage);
     const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, sortedTransactions);
+    console.log("Current Transactions:", currentTransactions);
 
     const handleSort = (key: string) => {
         setSortConfig((prev) => ({
@@ -318,18 +321,45 @@ const Transactions: React.FC = () => {
                     )}
                 </section>
 
-                {/* Pagination */}
-                <div className="pagination flex justify-center space-x-2 flex-wrap">
-                    {Array.from({ length: Math.ceil(filteredTransactions.length / transactionsPerPage) }).map((_, index) => (
-                        <button
-                            key={index + 1}
-                            onClick={() => setCurrentPage(index + 1)}
-                            className={`px-4 py-2 border rounded-lg ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
+                {/* Rows per page selection and Pagination centered */}
+                <div className="flex flex-col items-center mb-4">
+                    {/* Rows per page selection and Pagination in the same line */}
+                    <div className="flex items-center justify-center flex-wrap gap-4">
+                        {/* Rows per page selection */}
+                        <div className="flex items-center">
+                            <label htmlFor="rowsPerPage" className="mr-2">Rows per page:</label>
+                            <select
+                                onChange={(e) => {
+                                    setTransactionsPerPage(Number(e.target.value));
+                                    setCurrentPage(1); // Reset to first page when changing rows per page
+                                }}
+                                id="rowsPerPage"
+                                value={transactionsPerPage}
+                                className="p-2 border rounded-lg"
+                            >
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
+                        </div>
+
+                        {/* Pagination */}
+                        <div className="pagination flex space-x-2">
+                            {Array.from({ length: Math.ceil(filteredTransactions.length / transactionsPerPage) }).map((_, index) => (
+                                <button
+                                    key={index + 1}
+                                    onClick={() => setCurrentPage(index + 1)}
+                                    className={`px-4 py-2 border rounded-lg ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
+
+
             </div>
 
             <DeleteConfirmationModal

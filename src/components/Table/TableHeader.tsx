@@ -28,27 +28,28 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     const resizingColumn = useRef<string | null>(null);
     const startX = useRef<number>(0);
     const startWidth = useRef<number>(0);
-    let resizeTimeout: number | null = null;
 
     const handleMouseDown = (e: React.MouseEvent, columnKey: string) => {
         resizingColumn.current = columnKey;
         startX.current = e.clientX;
         startWidth.current = columnWidths[columnKey] ?? 50;
+
         document.addEventListener("mousemove", handleMouseMove);
         document.addEventListener("mouseup", handleMouseUp);
     };
 
     const handleMouseMove = (e: MouseEvent) => {
         if (!resizingColumn.current) return;
+
         const delta = e.clientX - startX.current;
         const newWidth = Math.max(startWidth.current + delta, 50);
 
-        if (resizeTimeout) clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
+        // Use requestAnimationFrame for real-time resizing
+        requestAnimationFrame(() => {
             if (newWidth !== columnWidths[resizingColumn.current!]) {
                 onColumnResize(resizingColumn.current!, newWidth);
             }
-        }, 100);
+        });
     };
 
     const handleMouseUp = () => {

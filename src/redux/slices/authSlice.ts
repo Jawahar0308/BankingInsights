@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { AppThunk } from '../store';
+
 
 interface User {
     email: string;
@@ -41,10 +41,10 @@ const authSlice = createSlice({
 
 export const { login, logout, markAsExistingUser } = authSlice.actions;
 
-// Thunk for handling complete logout
-export const completeLogout = (): AppThunk<void> => (dispatch) => {
-    dispatch(logout());
-};
+// // Thunk for handling complete logout
+// export const completeLogout = (): AppThunk<void> => (dispatch) => {
+//     dispatch(logout());
+// };
 
 export type { User, AuthState };
 export default authSlice.reducer;

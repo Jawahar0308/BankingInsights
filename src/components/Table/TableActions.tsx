@@ -26,4 +26,3 @@ const TableAction: React.FC<TableActionProps> = ({ transaction, isExpanded, onTo
 };
 
 export default TableAction;
-

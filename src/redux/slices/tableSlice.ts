@@ -2,14 +2,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface TableState {
     selectedRows: string[];
-    currentPage: number; // Track the current page for pagination
-    rowOrder: string[]; // Track the order of rows for drag and drop
+    currentPage: number;
+    rowOrder: string[];
+    originalOrder: string[]; // Store the original order to sync sorting & drag-drop
 }
 
 const initialState: TableState = {
     selectedRows: [],
-    currentPage: 1, // Default to the first page
-    rowOrder: [], // Initialize empty row order
+    currentPage: 1,
+    rowOrder: [],
+    originalOrder: [], // Keep a backup of original row order
 };
 
 const tableSlice = createSlice({
@@ -25,18 +27,30 @@ const tableSlice = createSlice({
             }
         },
         setCurrentPage(state, action: PayloadAction<number>) {
-            state.currentPage = action.payload; // Set the current page
+            state.currentPage = action.payload;
         },
-        moveRow(state, action: PayloadAction<{ fromIndex: number, toIndex: number }>) {
+        moveRow(state, action: PayloadAction<{ fromIndex: number; toIndex: number }>) {
             const { fromIndex, toIndex } = action.payload;
-            const [movedRow] = state.rowOrder.splice(fromIndex, 1);
-            state.rowOrder.splice(toIndex, 0, movedRow);
+            if (fromIndex !== toIndex) {
+                const newRowOrder = [...state.rowOrder];
+                const [movedRow] = newRowOrder.splice(fromIndex, 1);
+                newRowOrder.splice(toIndex, 0, movedRow);
+                state.rowOrder = newRowOrder;
+            }
         },
         setRowOrder(state, action: PayloadAction<string[]>) {
             state.rowOrder = action.payload;
+            state.originalOrder = [...action.payload]; // Keep original order
+        },
+        sortRows(state, action: PayloadAction<{ sortedData: string[] }>) {
+            state.rowOrder = action.payload.sortedData;
+            state.originalOrder = [...action.payload.sortedData]; // Update backup
+        },
+        resetRowOrder(state) {
+            state.rowOrder = [...state.originalOrder]; // Restore original order after sorting
         },
     },
 });
 
-export const { selectRow, setCurrentPage, moveRow, setRowOrder } = tableSlice.actions;
+export const { selectRow, setCurrentPage, moveRow, setRowOrder, sortRows, resetRowOrder } = tableSlice.actions;
 export default tableSlice.reducer;

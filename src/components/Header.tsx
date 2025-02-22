@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { RootState } from '../redux/store';
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();  // Get the current route
     const [isTitleCentered, setIsTitleCentered] = useState(false); // Track title centering
-    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
     const handleLogout = () => {
         setTimeout(() => {

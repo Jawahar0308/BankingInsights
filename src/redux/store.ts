@@ -1,12 +1,4 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
-
-export type AppThunk<ReturnType = void> = ThunkAction<
-    ReturnType,
-    RootState,
-    unknown,
-    Action<string>
->;
+import { configureStore } from '@reduxjs/toolkit';
 import transactionsReducer from './slices/transactionsSlice';
 import tableReducer from './slices/tableSlice';
 import authReducer from './slices/authSlice';
@@ -19,9 +11,6 @@ export const store = configureStore({
     },
 });
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-export const useAppDispatch: () => AppDispatch = useDispatch;
-
-
+export type RootState = ReturnType<typeof store.getState>; // Helps with useSelector()
+export type AppDispatch = typeof store.dispatch; // Helps with useDispatch()
 export default store;

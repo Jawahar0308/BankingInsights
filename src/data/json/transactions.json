@@ -8,11 +8,6 @@
         "description": "Salary deposit",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed",
@@ -40,11 +35,6 @@
         "description": "Grocery shopping",
         "category": "food",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Cancel Transaction",
-            "Add Notes"
-        ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Pending"
@@ -71,11 +61,6 @@
         "description": "Coffee shop",
         "category": "food",
         "payment_method": "cash",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/default_logo.png",
         "badges": [
             "Completed",
@@ -94,11 +79,6 @@
         "description": "Internet bill",
         "category": "utilities",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Retry Payment",
-            "Add Notes"
-        ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Failed"
@@ -116,11 +96,6 @@
         "description": "Electricity bill",
         "category": "utilities",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed",
@@ -148,10 +123,6 @@
         "description": "Freelance payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed",
@@ -170,11 +141,6 @@
         "description": "Public transport",
         "category": "transport",
         "payment_method": "cash",
-        "action": [
-            "View Details",
-            "Cancel Transaction",
-            "Add Notes"
-        ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Pending"
@@ -192,11 +158,6 @@
         "description": "Dinner with friends",
         "category": "food",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed",
@@ -215,10 +176,6 @@
         "description": "Stock dividends",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed",
@@ -237,11 +194,6 @@
         "description": "Movie tickets",
         "category": "entertainment",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed",
@@ -260,11 +212,6 @@
         "description": "Lunch at cafe",
         "category": "food",
         "payment_method": "cash",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed",
@@ -283,11 +230,6 @@
         "description": "Gym membership",
         "category": "health",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/cash_logo.png",
         "badges": [
             "Completed",
@@ -306,10 +248,6 @@
         "description": "Tax refund",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed",
@@ -328,11 +266,6 @@
         "description": "Phone bill",
         "category": "utilities",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed",
@@ -351,11 +284,6 @@
         "description": "Online subscription",
         "category": "entertainment",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed",
@@ -374,10 +302,6 @@
         "description": "Freelance project payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed",
@@ -396,11 +320,6 @@
         "description": "Breakfast",
         "category": "food",
         "payment_method": "cash",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed",
@@ -419,11 +338,6 @@
         "description": "Concert tickets",
         "category": "entertainment",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/cash_logo.png",
         "badges": [
             "Completed",
@@ -442,10 +356,6 @@
         "description": "Interest earned",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/cash_logo.png",
         "badges": [
             "Completed",
@@ -464,11 +374,6 @@
         "description": "Clothing purchase",
         "category": "shopping",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed",
@@ -487,11 +392,6 @@
         "description": "Snacks",
         "category": "food",
         "payment_method": "cash",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/cash_logo.png",
         "badges": [
             "Completed",
@@ -510,10 +410,6 @@
         "description": "Freelance payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/default_logo.png",
         "badges": [
             "Completed",
@@ -532,11 +428,6 @@
         "description": "Dinner",
         "category": "food",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed",
@@ -555,11 +446,6 @@
         "description": "Books",
         "category": "shopping",
         "payment_method": "cash",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed",
@@ -578,10 +464,6 @@
         "description": "Dividends",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed",
@@ -600,11 +482,6 @@
         "description": "Coffee",
         "category": "food",
         "payment_method": "cash",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed",
@@ -623,11 +500,6 @@
         "description": "Movie night",
         "category": "entertainment",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed",
@@ -646,10 +518,6 @@
         "description": "Freelance payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed",
@@ -668,11 +536,6 @@
         "description": "Mobile recharge",
         "category": "utilities",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/default_logo.png",
         "badges": [
             "Completed",
@@ -691,10 +554,6 @@
         "description": "Freelance project",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed",
@@ -713,11 +572,6 @@
         "description": "Gym membership",
         "category": "fitness",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Cancel Transaction",
-            "Add Notes"
-        ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Pending"
@@ -735,11 +589,6 @@
         "description": "Car repair",
         "category": "transport",
         "payment_method": "cash",
-        "action": [
-            "View Details",
-            "Retry Payment",
-            "Add Notes"
-        ],
         "image": "src/assets/cash_logo.png",
         "badges": [
             "Failed"
@@ -757,10 +606,6 @@
         "description": "Tax refund",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed",
@@ -779,11 +624,6 @@
         "description": "Online shopping",
         "category": "shopping",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/default_logo.png",
         "badges": [
             "Completed",
@@ -802,11 +642,6 @@
         "description": "Restaurant dinner",
         "category": "food",
         "payment_method": "debit card",
-        "action": [
-            "View Details",
-            "Cancel Transaction",
-            "Add Notes"
-        ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
             "Pending"
@@ -824,10 +659,6 @@
         "description": "Freelance project payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed",
@@ -846,11 +677,6 @@
         "description": "Movie tickets",
         "category": "entertainment",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Retry Payment",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Failed"
@@ -868,10 +694,6 @@
         "description": "Freelance income",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/cash_logo.png",
         "badges": [
             "Completed",
@@ -890,11 +712,6 @@
         "description": "Grocery shopping",
         "category": "food",
         "payment_method": "debit card",
-        "action": [
-            "View Details",
-            "Cancel Transaction",
-            "Add Notes"
-        ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Pending"
@@ -912,11 +729,6 @@
         "description": "Electric bill",
         "category": "utilities",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Retry Payment",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Failed"
@@ -934,10 +746,6 @@
         "description": "Salary credit",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/bank_transfer_logo.png",
         "badges": [
             "Completed",
@@ -956,11 +764,6 @@
         "description": "Restaurant bill",
         "category": "food",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Cancel Transaction",
-            "Add Notes"
-        ],
         "image": "src/assets/cash_logo.png",
         "badges": [
             "Pending"
@@ -978,11 +781,6 @@
         "description": "Home appliance",
         "category": "shopping",
         "payment_method": "debit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/credit_card_logo.jpeg",
         "badges": [
             "Completed",
@@ -1001,10 +799,6 @@
         "description": "Freelance project payment",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/default_logo.png",
         "badges": [
             "Completed",
@@ -1023,11 +817,6 @@
         "description": "Coffee shop",
         "category": "food",
         "payment_method": "cash",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/paypal_logo.png",
         "badges": [
             "Completed",
@@ -1046,10 +835,6 @@
         "description": "Freelance project",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed",
@@ -1068,11 +853,6 @@
         "description": "Public transport",
         "category": "transport",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Cancel Transaction",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Pending"
@@ -1090,10 +870,6 @@
         "description": "Freelance income",
         "category": "income",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed",
@@ -1112,11 +888,6 @@
         "description": "Dinner with friends",
         "category": "food",
         "payment_method": "credit card",
-        "action": [
-            "View Details",
-            "Refund/Reversal",
-            "Add Notes"
-        ],
         "image": "src/assets/upi_logo.png",
         "badges": [
             "Completed",
@@ -1135,11 +906,6 @@
         "description": "Online course fee",
         "category": "education",
         "payment_method": "bank transfer",
-        "action": [
-            "View Details",
-            "Retry Payment",
-            "Add Notes"
-        ],
         "image": "src/assets/cash_logo.png",
         "badges": [
             "Failed"

@@ -4,22 +4,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useDragDrop } from '../components/Table/TableDragDrop';
 import { setTransactions } from '../redux/slices/transactionsSlice';
 import { setRowOrder } from '../redux/slices/tableSlice';
-import { RootState } from '../redux/store';
+import { AppDispatch, RootState } from '../redux/store';
 import { CSVLink } from 'react-csv';
-import { getTransactions } from '../data/transactions';
 import TableBadges from "../components/Table/TableBadges";
 import TableImageRenderer from '../components/Table/TableImageRenderer';
 import TableChild from '../components/Table/TableChild';
 import TableHeader from '../components/Table/TableHeader';
+import { getTransactions } from '../data/transactions';
+import { sortTransactions } from '../hooks/useSorting'
 import { filterTransactions } from '../hooks/useFilters';
-import { sortTransactions } from '../hooks/useSorting';
 import { paginateTransactions } from '../hooks/usePagination';
 import TableActions from '../components/Table/TableActions';
 import TableCheckbox from '../components/Table/TableCheckbox';
 
 const Transactions: React.FC = () => {
-    const dispatch = useDispatch();
-    const transactions = useSelector((state: RootState) => state.transactions.data);
+    const dispatch = useDispatch<AppDispatch>();
+    const transactions = useSelector((state: RootState) => state.transactions.data) || [];
     const [searchTerm, setSearchTerm] = useState('');
     const [columnFilters, setColumnFilters] = useState<Record<string, string>>({
         id: '',
@@ -57,20 +57,24 @@ const Transactions: React.FC = () => {
 
     // Load transactions on mount
     useEffect(() => {
+        setLoading(true);
         try {
-            const data = getTransactions();
-            dispatch(setTransactions(data));
-            dispatch(setRowOrder(data.map(t => t.id.toString())));
+            // Get initial transactions data
+            const initialTransactions = getTransactions();
+            dispatch(setTransactions(initialTransactions));
+            dispatch(setRowOrder(initialTransactions.map((t: Record<string, any>) => t.id.toString())));
         } catch (err) {
             setError("Failed to load transactions. Please try again later.");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
-    }, [dispatch]);
+    }, [dispatch]);  // Only dispatch as dependency
+
 
     // Handle select all rows
     const handleSelectAll = useCallback((checked: boolean) => {
         const newSelectedRows = checked ?
-            new Set<number>(transactions.map(t => t.id)) :
+            new Set<number>(transactions.map((t: Record<string, any>) => t.id)) :
             new Set<number>();
         selectedRowsRef.current = newSelectedRows;
         setSelectedRows(newSelectedRows);
@@ -92,12 +96,14 @@ const Transactions: React.FC = () => {
     // Confirm deletion of selected rows
     const confirmDelete = () => {
         const remainingTransactions = transactions.filter(
-            (t: { id: number }) => !selectedRows.has(t.id)
+            (t: Record<string, any>) => !selectedRowsRef.current.has(t.id) // Use selectedRowsRef.current
         );
         dispatch(setTransactions(remainingTransactions));
-        setSelectedRows(new Set());
+        selectedRowsRef.current.clear(); // Clear the selected rows
+        setSelectedRows(new Set()); // Update state to reflect cleared selections
         setIsDeleteModalOpen(false);
     };
+
 
     if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
     if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
@@ -109,6 +115,72 @@ const Transactions: React.FC = () => {
         sortTransactions(filteredTransactions, sortConfig) :
         filteredTransactions;
     const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, sortedTransactions);
+
+    const handleSort = (key: string) => {
+        setSortConfig((prev) => ({
+            key,
+            direction: prev?.key === key && prev?.direction === "asc" ? "desc" : "asc"
+        }));
+    };
+
+    const excludedColumns = ['userId', 'type', 'description', 'image', 'payment_method', 'childTable'];
+    const firstColumns = ['category']; // Ensure only existing columns are first
+
+    // Extract all columns while excluding unwanted ones
+    const allKeys = Array.from(
+        new Set(transactions.flatMap(transaction => Object.keys(transaction)))
+    ).filter(key => !excludedColumns.includes(key)); // Remove unwanted columns
+
+    // Ensure firstColumns only includes existing keys
+    const validFirstColumns = firstColumns.filter(key => allKeys.includes(key));
+
+    // Get middle columns (excluding first priority)
+    const middleColumns = allKeys.filter(key => !validFirstColumns.includes(key));
+
+    // Final ordered columns
+    const orderedColumns = [...validFirstColumns, ...middleColumns];
+
+    console.log(orderedColumns);
+
+
+    // Cell Rendering Function
+    const renderCell = (key: string, value: any) => {
+        if (value === null || value === undefined) return <span className="text-gray-500">null</span>;
+
+        switch (key) {
+            case "amount":
+                return <span className="text-green-600 font-semibold">₹{value}</span>;
+            case "badges":
+                return <TableBadges statuses={[value?.[0]]} />;
+            case "date":
+                return <span className="font-medium">{value}</span>;
+            case "category":
+                return <span className="italic">{value}</span>;
+            default:
+                if (typeof value === 'object') {
+                    if (Array.isArray(value)) {
+                        return (
+                            <ul className="list-disc pl-4">
+                                {value.map((item, idx) => (
+                                    <li key={idx}>{JSON.stringify(item)}</li>
+                                ))}
+                            </ul>
+                        );
+                    }
+                    return (
+                        <div className="text-xs text-gray-700 space-y-1">
+                            {Object.entries(value).map(([subKey, subValue], idx) => (
+                                <div key={idx}>
+                                    <strong>{subKey}:</strong> {subValue !== null && subValue !== undefined ? subValue.toString() : 'null'}
+                                </div>
+                            ))}
+                        </div>
+                    );
+                }
+                return <span>{value.toString()}</span>;
+        }
+    };
+
 
     return (
         <>
@@ -154,11 +226,8 @@ const Transactions: React.FC = () => {
                                 <table className="table-auto w-full min-w-[800px] border-collapse border border-gray-400">
                                     <TableHeader
                                         sortConfig={sortConfig}
-                                        handleSort={(key) => setSortConfig({
-                                            key,
-                                            direction: sortConfig?.key === key && sortConfig?.direction === 'asc' ? 'desc' : 'asc'
-                                        })}
-                                        columnFilters={columnFilters}
+                                        handleSort={handleSort}
+                                        // columnFilters={columnFilters}
                                         handleColumnFilter={(column, value) => setColumnFilters(prev => ({
                                             ...prev,
                                             [column]: value
@@ -168,6 +237,7 @@ const Transactions: React.FC = () => {
                                         isModal={isDeleteModalOpen}
                                         onColumnResize={handleColumnResize}
                                         columnWidths={columnWidths}
+                                        allKeys={allKeys}
                                     />
 
                                     <tbody className='w-full overflow-x-auto'>
@@ -201,14 +271,21 @@ const Transactions: React.FC = () => {
                                                     </td>
 
                                                     {/* Other Columns */}
-                                                    <td className="px-4 py-2 border border-gray-400">{transaction.date}</td>
-                                                    <td className="px-4 py-2 border border-gray-400 text-green-600 font-semibold">
-                                                        ₹{transaction.amount}
-                                                    </td>
-                                                    <td className="px-4 py-2 border border-gray-400">{transaction.category}</td>
-                                                    <td className="px-4 py-2 border border-gray-400">
-                                                        <TableBadges statuses={[transaction.badges[0]]} />
-                                                    </td>
+                                                    {firstColumns.map(key => (
+                                                        <td className="px-4 py-2 border border-gray-400 font-bold" key={key}>
+                                                            {renderCell(key, transaction[key])}
+                                                        </td>
+                                                    ))}
+
+                                                    {/* Middle Columns (Dynamically Arranged) */}
+                                                    {middleColumns
+                                                        .filter(key => key !== "id") // Exclude 'id'
+                                                        .map(key => (
+                                                            <td className="px-4 py-2 border border-gray-400" key={key}>
+                                                                {renderCell(key, transaction[key])}
+                                                            </td>
+                                                        ))}
+
                                                     <td className="px-4 py-2 border border-gray-400">
                                                         <TableActions
                                                             transaction={transaction}

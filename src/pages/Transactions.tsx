@@ -11,7 +11,7 @@ import TableImageRenderer from '../components/Table/TableImageRenderer';
 import TableChild from '../components/Table/TableChild';
 import TableHeader from '../components/Table/TableHeader';
 import { getTransactions } from '../data/transactions';
-import { sortTransactions } from '../hooks/useSorting'
+import { sortTransactions } from '../hooks/useSorting';
 import { filterTransactions } from '../hooks/useFilters';
 import { paginateTransactions } from '../hooks/usePagination';
 import TableActions from '../components/Table/TableActions';
@@ -31,6 +31,7 @@ const Transactions: React.FC = () => {
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [transactionsPerPage, setTransactionsPerPage] = useState(10); // Default to 10
+    const userSetRowsPerPage = useRef(false); // Track if user has set rows per page
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -57,6 +58,21 @@ const Transactions: React.FC = () => {
 
     // Load transactions on mount
     useEffect(() => {
+        const handleResize = () => {
+            if (!userSetRowsPerPage.current) {
+                setTransactionsPerPage(window.innerWidth < 768 ? 5 : 10); // Adjust rows per page based on screen size
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Call on mount to set initial value
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    useEffect(() => {
         setLoading(true);
         try {
             // Get initial transactions data
@@ -69,7 +85,6 @@ const Transactions: React.FC = () => {
             setLoading(false);
         }
     }, [dispatch]);  // Only dispatch as dependency
-
 
     // Handle select all rows
     const handleSelectAll = useCallback((checked: boolean) => {
@@ -103,7 +118,6 @@ const Transactions: React.FC = () => {
         setSelectedRows(new Set()); // Update state to reflect cleared selections
         setIsDeleteModalOpen(false);
     };
-
 
     if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
     if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
@@ -145,7 +159,6 @@ const Transactions: React.FC = () => {
 
     console.log(orderedColumns);
 
-
     // Cell Rendering Function
     const renderCell = (key: string, value: any) => {
         if (value === null || value === undefined) return <span className="text-gray-500">null</span>;
@@ -183,7 +196,6 @@ const Transactions: React.FC = () => {
                 return <span>{value.toString()}</span>;
         }
     };
-
 
     return (
         <>
@@ -332,6 +344,7 @@ const Transactions: React.FC = () => {
                                 onChange={(e) => {
                                     setTransactionsPerPage(Number(e.target.value));
                                     setCurrentPage(1); // Reset to first page when changing rows per page
+                                    userSetRowsPerPage.current = true; // Mark that user has set rows per page
                                 }}
                                 id="rowsPerPage"
                                 value={transactionsPerPage}

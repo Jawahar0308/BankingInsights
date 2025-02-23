@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import TableSearch from "./TableSearch";
 import TableCheckbox from "./TableCheckbox";
 
@@ -40,14 +40,14 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
     const handleMouseMove = (e: MouseEvent) => {
         if (!resizingColumn.current) return;
-
-        const delta = e.clientX - startX.current;
-        const newWidth = Math.max(startWidth.current + delta, 50);
-
-        // Use requestAnimationFrame for real-time resizing
         requestAnimationFrame(() => {
-            if (newWidth !== columnWidths[resizingColumn.current!]) {
-                onColumnResize(resizingColumn.current!, newWidth);
+            const delta = e.clientX - startX.current;
+            const newWidth = Math.max(startWidth.current + delta, 50);
+            onColumnResize(resizingColumn.current!, newWidth);
+            const table = document.querySelector("table");
+            if (table) {
+                table.style.minWidth = "100%";
+                table.style.width = "auto";
             }
         });
     };
@@ -58,15 +58,31 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         document.removeEventListener("mouseup", handleMouseUp);
     };
 
+    useEffect(() => {
+        const handleResize = () => {
+            requestAnimationFrame(() => {
+                const table = document.querySelector("table");
+                if (table) {
+                    table.style.overflowX = "auto";
+                }
+            });
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     const getSortIndicator = (key: string) => {
         if (!sortConfig || sortConfig.key !== key) return null;
         return sortConfig.direction === "asc" ? "↑" : "↓";
     };
 
+    const orderedKeys = allKeys.includes('category')
+        ? ['category', ...allKeys.filter(key => key !== 'category')]
+        : allKeys;
+
     return (
         <thead className="w-full overflow-x-auto relative">
             <tr>
-                {/* Checkbox Column */}
                 <th
                     style={{
                         width: `${columnWidths.checkbox ?? 50}px`,
@@ -80,21 +96,19 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                 >
                     <TableCheckbox isChecked={isAllSelected} onChange={onSelectAll} />
                 </th>
-
-                {/* Transaction ID Column */}
                 <th
                     key="id"
                     className="px-4 py-2 border border-gray-400 bg-white"
                     style={{
                         width: `${columnWidths.id ?? 100}px`,
                         position: isModal ? "static" : "sticky",
-                        left: `${columnWidths.checkbox ?? 50}px`,
+                        left: `${columnWidths.id}px`,
                         zIndex: isModal ? "auto" : 10,
                         background: "white",
                         boxShadow: "1px 0 0 0 #9ca3af",
                     }}
                 >
-                    <div className="flex flex-col items-center justify-center">
+                    <div className="flex flex-col items-center justify-center left-0">
                         <div className="cursor-pointer font-semibold text-gray-700" onClick={() => handleSort("id")}>
                             Transaction ID {getSortIndicator("id")}
                         </div>
@@ -103,32 +117,17 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                         </div>
                     </div>
                 </th>
-
-                {/* Dynamic Columns with special ordering */}
-                {allKeys
+                {orderedKeys
                     .filter((key) => !['checkbox', 'id', 'remarks'].includes(key))
-                    .sort((a, b) => {
-                        if (a === 'category') return -1;
-                        if (b === 'category') return 1;
-                        return 0;
-                    })
                     .map((key) => (
                         <th
                             key={key}
                             className="px-4 py-2 border border-gray-400 relative"
-                            style={{
-                                width: `${columnWidths[key] ?? 100}px`,
-                                minWidth: "50px",
-                                position: isModal ? "static" : key === 'category' ? "sticky" : undefined,
-                                left: key === 'category' ? `${(columnWidths.checkbox ?? 50) + (columnWidths.id ?? 100)}px` : undefined,
-                                zIndex: key === 'category' ? 10 : undefined,
-                                background: "white",
-                                boxShadow: key === 'category' ? "1px 0 0 0 #9ca3af" : undefined,
-                            }}
+                            style={{ width: `${columnWidths[key] ?? 100}px`, minWidth: "50px" }}
                         >
                             <div className="flex flex-col items-center justify-center">
                                 <div className="cursor-pointer font-semibold text-gray-700" onClick={() => handleSort(key)}>
-                                    {key === 'category' ? 'Category' : key.charAt(0).toUpperCase() + key.slice(1)} {getSortIndicator(key)}
+                                    {key.charAt(0).toUpperCase() + key.slice(1)} {getSortIndicator(key)}
                                 </div>
                                 <div className="w-32 mx-auto">
                                     <TableSearch onSearch={(value: string) => handleColumnFilter(key, value)} placeholder={`Search ${key}`} />
@@ -140,16 +139,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                             />
                         </th>
                     ))}
-
-                <th
-                    className="px-4 py-2 border border-gray-400 relative"
-                    style={{ width: `${columnWidths.remarks}px`, minWidth: '50px' }}
-                >
+                <th className="px-4 py-2 border border-gray-400 relative" style={{ width: `${columnWidths.remarks}px`, minWidth: '50px' }}>
                     Remarks
-                    <div
-                        className="cursor-col-resize absolute right-0 top-0 h-full w-0.5 bg-gray-400"
-                        onMouseDown={(e) => handleMouseDown(e, 'remarks')}
-                    />
+                    <div className="cursor-col-resize absolute right-0 top-0 h-full w-0.5 bg-gray-400" onMouseDown={(e) => handleMouseDown(e, 'remarks')} />
                 </th>
             </tr>
         </thead>

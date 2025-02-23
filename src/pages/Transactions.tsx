@@ -38,9 +38,17 @@ const Transactions: React.FC = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const selectedRowsRef = useRef<Set<number>>(new Set());
     const [selectedRows, setSelectedRows] = useState<Set<number>>(selectedRowsRef.current);
-    const { onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd } = useDragDrop(transactions, (reorderedTransactions) => {
+
+    // Filter, sort and paginate transactions
+    const filteredTransactions = filterTransactions(transactions, searchTerm, columnFilters);
+    const sortedTransactions = sortConfig ?
+        sortTransactions(filteredTransactions, sortConfig) :
+        filteredTransactions;
+
+    const { onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd } = useDragDrop(sortedTransactions, (reorderedTransactions) => {
         dispatch(setTransactions(reorderedTransactions));
     });
+
     const [columnWidths, setColumnWidths] = useState<Record<string, number>>({
         checkbox: 0,  // Fixed width for checkbox column
         id: 50,      // Fixed width for Transaction ID column
@@ -123,13 +131,10 @@ const Transactions: React.FC = () => {
     if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
     if (transactions.length === 0) return <div className="flex justify-center items-center h-screen text-gray-500">No transactions available</div>;
 
-    // Filter, sort and paginate transactions
-    const filteredTransactions = filterTransactions(transactions, searchTerm, columnFilters);
-    const sortedTransactions = sortConfig ?
-        sortTransactions(filteredTransactions, sortConfig) :
-        filteredTransactions;
     console.log("Current Page:", currentPage);
     console.log("Transactions Per Page:", transactionsPerPage);
+    console.log("Sorted Transactions:", sortedTransactions);
+
     const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, sortedTransactions);
     console.log("Current Transactions:", currentTransactions);
 
@@ -238,7 +243,7 @@ const Transactions: React.FC = () => {
                             </div>
 
                             <div className="overflow-x-auto relative">
-                                <table className="table-auto w-full min-w-[800px] border-collapse border border-gray-400">
+                                <table className="table-auto w-full min-w-[800px] border-collapse border border-gray-400 relative">
                                     <TableHeader
                                         sortConfig={sortConfig}
                                         handleSort={handleSort}

@@ -2,6 +2,7 @@
     {
         "id": 1,
         "userId": 1,
+        "Column": "hello",
         "type": "credit",
         "amount": 1000.0,
         "date": "2024-01-05T09:00:00Z",

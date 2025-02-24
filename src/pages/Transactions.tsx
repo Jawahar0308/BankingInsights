@@ -43,20 +43,38 @@ const Transactions: React.FC = () => {
         dispatch(setTransactions(reorderedTransactions));
     });
 
+    const excludedColumns = ['userId', 'type', 'description', 'image', 'payment_method', 'childTable'];
+    const firstColumns = ['category'];
+
+    // Extract all columns while excluding unwanted ones
+    const allKeys = Array.from(
+        new Set(transactions.flatMap(transaction => Object.keys(transaction)))
+    ).filter(key => !excludedColumns.includes(key));
+
     const [columnWidths, setColumnWidths] = useState<Record<string, number>>({
-        checkbox: 0,  // Fixed width for checkbox column
-        id: 50,      // Fixed width for Transaction ID column
-        date: 180,
-        amount: 120,
-        category: 200,
-        status: 150,
-        remarks: 150
+        checkbox: 50, // Fixed width
+        id: 100      // Fixed width
     });
 
-    // Handle column resizing
-    const handleColumnResize = (key: string, newWidth: number) => {
-        setColumnWidths((prev) => ({ ...prev, [key]: newWidth }));
-    };
+    const handleColumnResize = useCallback((key: string, newWidth: number) => {
+        if (['checkbox', 'id'].includes(key)) return; // Prevent resizing fixed columns
+
+        setColumnWidths((prev) => {
+            // Initialize width for all columns if not already set
+            const newWidths = { ...prev };
+            allKeys.forEach(col => {
+                if (!newWidths[col] && col !== 'checkbox' && col !== 'id') {
+                    newWidths[col] = 250; // Default width for new columns
+                }
+            });
+
+            // Update the resized column
+            return {
+                ...newWidths,
+                [key]: Math.max(newWidth, 150) // Use a more reasonable minimum width
+            };
+        });
+    }, [allKeys]);
 
     // Load transactions on mount
     useEffect(() => {
@@ -134,27 +152,10 @@ const Transactions: React.FC = () => {
         }));
     };
 
-    const excludedColumns = ['userId', 'type', 'description', 'image', 'payment_method', 'childTable'];
-    const firstColumns = ['category']; // Ensure only existing columns are first
-    // const lastColumns = ['remarks'];
-
-    // Extract all columns while excluding unwanted ones
-    const allKeys = Array.from(
-        new Set(transactions.flatMap(transaction => Object.keys(transaction)))
-    ).filter(key => !excludedColumns.includes(key)); // Remove unwanted columns
-
-    // Ensure firstColumns only includes existing keys
     const validFirstColumns = firstColumns.filter(key => allKeys.includes(key));
-
-    // Get middle columns (excluding first priority)
     const middleColumns = allKeys.filter(key => !validFirstColumns.includes(key));
-
-    // Final ordered columns
     const orderedColumns = [...validFirstColumns, ...middleColumns];
 
-    console.log(orderedColumns);
-
-    // Cell Rendering Function
     const renderCell = (key: string, value: any) => {
         if (value === null || value === undefined) return <span className="text-gray-500">null</span>;
 
@@ -239,8 +240,8 @@ const Transactions: React.FC = () => {
                                         onSelectAll={handleSelectAll}
                                         isAllSelected={selectedRows.size === transactions.length}
                                         isModal={isDeleteModalOpen}
-                                        onColumnResize={handleColumnResize}
                                         columnWidths={columnWidths}
+                                        onColumnResize={handleColumnResize}
                                         allKeys={allKeys}
                                     />
 
@@ -268,15 +269,26 @@ const Transactions: React.FC = () => {
                                                     </td>
 
                                                     <td
-                                                        className={`${isDeleteModalOpen ? 'z-0' : 'sticky left-[50px] z-10'} bg-white px-4 py-2 border border-gray-400 min-w-[120px]`}
-                                                        style={{ boxShadow: "1px 0 0 0 #9ca3af" }}
+                                                        className={`${isDeleteModalOpen ? 'z-0' : 'sticky left-[50px] z-10'} bg-white px-4 py-2 border border-gray-400`}
+                                                        style={{
+                                                            width: `${columnWidths.id}px`,
+                                                            boxShadow: "1px 0 0 0 #9ca3af",
+                                                            minWidth: "50px"
+                                                        }}
                                                     >
                                                         {transaction.id}
                                                     </td>
 
                                                     {/* Other Columns */}
                                                     {firstColumns.map(key => (
-                                                        <td className="px-4 py-2 border border-gray-400 font-bold" key={key}>
+                                                        <td
+                                                            className="px-4 py-2 border border-gray-400 font-bold"
+                                                            key={key}
+                                                            style={{
+                                                                width: `${columnWidths[key] || 150}px`, // Default width if missing
+                                                                minWidth: "50px",
+                                                            }}
+                                                        >
                                                             {renderCell(key, transaction[key])}
                                                         </td>
                                                     ))}
@@ -285,12 +297,25 @@ const Transactions: React.FC = () => {
                                                     {middleColumns
                                                         .filter(key => key !== "id") // Exclude 'id'
                                                         .map(key => (
-                                                            <td className="px-4 py-2 border border-gray-400" key={key}>
+                                                            <td
+                                                                className="px-4 py-2 border border-gray-400"
+                                                                key={key}
+                                                                style={{
+                                                                    width: `${columnWidths[key] || 150}px`, // Default width if missing
+                                                                    minWidth: "50px",
+                                                                }}
+                                                            >
                                                                 {renderCell(key, transaction[key])}
                                                             </td>
                                                         ))}
 
-                                                    <td className="px-4 py-2 border border-gray-400">
+                                                    <td
+                                                        className="px-4 py-2 border border-gray-400"
+                                                        style={{
+                                                            width: `${columnWidths.remarks || 150}px`,
+                                                            minWidth: "50px"
+                                                        }}
+                                                    >
                                                         <TableActions
                                                             transaction={transaction}
                                                             isExpanded={expandedRow === transaction.id}

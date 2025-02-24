@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import TableSearch from "./TableSearch";
 import TableCheckbox from "./TableCheckbox";
 
@@ -30,59 +30,73 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     const startWidth = useRef<number>(0);
 
     const handleMouseDown = (e: React.MouseEvent, columnKey: string) => {
+        console.log('Mouse down on column:', columnKey);
+        e.preventDefault();
         resizingColumn.current = columnKey;
         startX.current = e.clientX;
-        startWidth.current = columnWidths[columnKey] ?? 50;
+        startWidth.current = columnWidths[columnKey] ?? 100;
 
         document.addEventListener("mousemove", handleMouseMove);
         document.addEventListener("mouseup", handleMouseUp);
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-        if (!resizingColumn.current) return;
-        requestAnimationFrame(() => {
-            const delta = e.clientX - startX.current;
-            const newWidth = Math.max(startWidth.current + delta, 50);
-            onColumnResize(resizingColumn.current!, newWidth);
-            const table = document.querySelector("table");
-            if (table) {
-                table.style.minWidth = "100%";
-                table.style.width = "auto";
-            }
-        });
-    };
+    const handleMouseMove = useCallback((e: MouseEvent) => {
+        if (!resizingColumn.current) {
+            console.log('No resizing column set');
+            return;
+        }
 
-    const handleMouseUp = () => {
+        const delta = e.clientX - startX.current;
+        const columnKey = resizingColumn.current!;
+        const newWidth = Math.max(startWidth.current + delta, 50);
+
+        console.log('Resizing column:', columnKey, 'New width:', newWidth);
+
+        // Prevent text selection while resizing
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Update the column width
+        onColumnResize(columnKey, newWidth);
+
+        // Update the cursor style
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+        document.body.style.pointerEvents = "none";
+    }, [onColumnResize]);
+
+    const handleMouseUp = useCallback(() => {
+        console.log('Mouse up, ending resize');
         resizingColumn.current = null;
         document.removeEventListener("mousemove", handleMouseMove);
         document.removeEventListener("mouseup", handleMouseUp);
-    };
+
+        // Restore cursor and selection
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+        document.body.style.pointerEvents = "";
+    }, [handleMouseMove]);
 
     useEffect(() => {
-        const handleResize = () => {
-            requestAnimationFrame(() => {
-                const table = document.querySelector("table");
-                if (table) {
-                    table.style.overflowX = "auto";
-                }
-            });
+        return () => {
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
         };
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    }, [handleMouseMove, handleMouseUp]);
 
     const getSortIndicator = (key: string) => {
         if (!sortConfig || sortConfig.key !== key) return null;
         return sortConfig.direction === "asc" ? "↑" : "↓";
     };
 
-    const orderedKeys = allKeys.includes('category')
-        ? ['category', ...allKeys.filter(key => key !== 'category')]
+    const orderedKeys = allKeys.includes("category")
+        ? ["category", ...allKeys.filter((key) => key !== "category")]
         : allKeys;
 
     return (
         <thead className="w-full overflow-x-auto relative">
             <tr>
+                {/* Checkbox Column */}
                 <th
                     style={{
                         width: `${columnWidths.checkbox ?? 50}px`,
@@ -96,13 +110,15 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                 >
                     <TableCheckbox isChecked={isAllSelected} onChange={onSelectAll} />
                 </th>
+
+                {/* ID Column */}
                 <th
                     key="id"
-                    className="px-4 py-2 border border-gray-400 bg-white"
+                    className="px-4 py-2 border border-gray-400 bg-white relative"
                     style={{
                         width: `${columnWidths.id ?? 100}px`,
                         position: isModal ? "static" : "sticky",
-                        left: `${columnWidths.id}px`,
+                        left: "50px",
                         zIndex: isModal ? "auto" : 10,
                         background: "white",
                         boxShadow: "1px 0 0 0 #9ca3af",
@@ -117,13 +133,15 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                         </div>
                     </div>
                 </th>
+
+                {/* Dynamic Columns */}
                 {orderedKeys
-                    .filter((key) => !['checkbox', 'id', 'remarks'].includes(key))
+                    .filter((key) => !["checkbox", "id", "remarks"].includes(key))
                     .map((key) => (
                         <th
                             key={key}
                             className="px-4 py-2 border border-gray-400 relative"
-                            style={{ width: `${columnWidths[key] ?? 100}px`, minWidth: "50px" }}
+                            style={{ width: `${columnWidths[key] || 200}px`, minWidth: "150px" }}
                         >
                             <div className="flex flex-col items-center justify-center">
                                 <div className="cursor-pointer font-semibold text-gray-700" onClick={() => handleSort(key)}>
@@ -133,15 +151,68 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                                     <TableSearch onSearch={(value: string) => handleColumnFilter(key, value)} placeholder={`Search ${key}`} />
                                 </div>
                             </div>
+                            {/* Resizable Handle */}
                             <div
-                                className="cursor-col-resize absolute right-0 top-0 h-full w-0.5 bg-gray-400"
-                                onMouseDown={(e) => handleMouseDown(e, key)}
+                                style={{
+                                    position: "absolute",
+                                    right: -2,
+                                    top: 0,
+                                    height: "100%",
+                                    width: "6px",
+                                    cursor: "col-resize",
+                                    backgroundColor: "#9ca3af",
+                                    opacity: 0,
+                                    transition: "opacity 0.2s",
+                                    zIndex: 1,
+                                    userSelect: "none"
+                                }}
+                                onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    handleMouseDown(e, key);
+                                }}
+                                onMouseEnter={(e) => {
+                                    const target = e.target as HTMLElement;
+                                    target.style.opacity = "1";
+                                }}
+                                onMouseLeave={(e) => {
+                                    const target = e.target as HTMLElement;
+                                    target.style.opacity = "0";
+                                }}
+                                className={`resizer resizer-${key}`}
                             />
                         </th>
                     ))}
-                <th className="px-4 py-2 border border-gray-400 relative" style={{ width: `${columnWidths.remarks}px`, minWidth: '50px' }}>
+
+                {/* Remarks Column */}
+                <th className="px-4 py-2 border border-gray-400 relative" style={{ width: `${columnWidths.remarks || 120}px`, minWidth: "50px" }}>
                     Remarks
-                    <div className="cursor-col-resize absolute right-0 top-0 h-full w-0.5 bg-gray-400" onMouseDown={(e) => handleMouseDown(e, 'remarks')} />
+                    <div
+                        style={{
+                            position: "absolute",
+                            right: 0,
+                            top: 0,
+                            height: "100%",
+                            width: "4px",
+                            cursor: "col-resize",
+                            backgroundColor: "#9ca3af",
+                            opacity: 0,
+                            transition: "opacity 0.2s",
+                            zIndex: 1,
+                        }}
+                        onMouseDown={(e) => {
+                            e.preventDefault();
+                            handleMouseDown(e, "remarks");
+                        }}
+                        onMouseEnter={(e) => {
+                            const target = e.target as HTMLElement;
+                            target.style.opacity = "1";
+                        }}
+                        onMouseLeave={(e) => {
+                            const target = e.target as HTMLElement;
+                            target.style.opacity = "0";
+                        }}
+                        className="resizer resizer-remarks"
+                    />
                 </th>
             </tr>
         </thead>

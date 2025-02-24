@@ -30,10 +30,6 @@
         "id": 2,
         "userId": 1,
         "type": "debit",
-        "Column1": [
-            "second row1",
-            "second row2"
-        ],
         "amount": 50.0,
         "date": "2024-01-10T12:30:00Z",
         "description": "Grocery shopping",
@@ -62,7 +58,6 @@
         "userId": 1,
         "type": "debit",
         "amount": 20.0,
-        "Column2": "third row",
         "date": "2024-01-15T15:45:00Z",
         "description": "Coffee shop",
         "category": "food",
@@ -82,7 +77,6 @@
         "type": "debit",
         "amount": 100.0,
         "date": "2024-02-01T10:00:00Z",
-        "Column4": "Fourth row",
         "description": "Internet bill",
         "category": "utilities",
         "payment_method": "bank transfer",

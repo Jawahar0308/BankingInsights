@@ -59,22 +59,11 @@ const Transactions: React.FC = () => {
     const handleColumnResize = useCallback((key: string, newWidth: number) => {
         if (['checkbox', 'id'].includes(key)) return; // Prevent resizing fixed columns
 
-        setColumnWidths((prev) => {
-            // Initialize width for all columns if not already set
-            const newWidths = { ...prev };
-            allKeys.forEach(col => {
-                if (!newWidths[col] && col !== 'checkbox' && col !== 'id') {
-                    newWidths[col] = 250; // Default width for new columns
-                }
-            });
-
-            // Update the resized column
-            return {
-                ...newWidths,
-                [key]: Math.max(newWidth, 150) // Use a more reasonable minimum width
-            };
-        });
-    }, [allKeys]);
+        setColumnWidths((prev) => ({
+            ...prev,
+            [key]: Math.max(newWidth, 150) // Ensure minimum width of 150px
+        }));
+    }, []);
 
     // Load transactions on mount
     useEffect(() => {

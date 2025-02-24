@@ -93,6 +93,7 @@
         "userId": 1,
         "type": "debit",
         "amount": 200.0,
+        "column": "row",
         "date": "2024-02-05T14:00:00Z",
         "description": "Electricity bill",
         "category": "utilities",

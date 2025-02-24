@@ -2,7 +2,6 @@
     {
         "id": 1,
         "userId": 1,
-        "Column": "hello",
         "type": "credit",
         "amount": 1000.0,
         "date": "2024-01-05T09:00:00Z",
@@ -31,6 +30,10 @@
         "id": 2,
         "userId": 1,
         "type": "debit",
+        "Column1": [
+            "second row1",
+            "second row2"
+        ],
         "amount": 50.0,
         "date": "2024-01-10T12:30:00Z",
         "description": "Grocery shopping",
@@ -46,6 +49,7 @@
                     "id": 2001,
                     "type": "credit",
                     "amount": 30.0,
+                    "column": "second column",
                     "description": "Voucher discount",
                     "status": "completed",
                     "date": "2024-01-10T12:00:00Z"
@@ -58,6 +62,7 @@
         "userId": 1,
         "type": "debit",
         "amount": 20.0,
+        "Column2": "third row",
         "date": "2024-01-15T15:45:00Z",
         "description": "Coffee shop",
         "category": "food",
@@ -77,6 +82,7 @@
         "type": "debit",
         "amount": 100.0,
         "date": "2024-02-01T10:00:00Z",
+        "Column4": "Fourth row",
         "description": "Internet bill",
         "category": "utilities",
         "payment_method": "bank transfer",
@@ -98,10 +104,6 @@
         "category": "utilities",
         "payment_method": "bank transfer",
         "image": "src/assets/credit_card_logo.jpeg",
-        "badges": [
-            "Completed",
-            "Verified"
-        ],
         "childTable": {
             "relatedTransactions": [
                 {

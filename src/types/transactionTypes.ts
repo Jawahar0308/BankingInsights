@@ -5,5 +5,5 @@ export interface Transaction {
     // date: string;
     // badges: string[];
     // isChild?: boolean;
-    [key: string]: any; // Allow dynamic properties
+    [key: string]: any;
 }

@@ -21,13 +21,7 @@ const Transactions: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const transactions = useSelector((state: RootState) => state.transactions.data) || [];
     const [searchTerm, setSearchTerm] = useState('');
-    const [columnFilters, setColumnFilters] = useState<Record<string, string>>({
-        id: '',
-        date: '',
-        amount: '',
-        category: '',
-        status: ''
-    });
+    const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [transactionsPerPage, setTransactionsPerPage] = useState(10); // Default to 10
@@ -131,12 +125,7 @@ const Transactions: React.FC = () => {
     if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
     if (transactions.length === 0) return <div className="flex justify-center items-center h-screen text-gray-500">No transactions available</div>;
 
-    console.log("Current Page:", currentPage);
-    console.log("Transactions Per Page:", transactionsPerPage);
-    console.log("Sorted Transactions:", sortedTransactions);
-
     const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, sortedTransactions);
-    console.log("Current Transactions:", currentTransactions);
 
     const handleSort = (key: string) => {
         setSortConfig((prev) => ({
@@ -147,6 +136,7 @@ const Transactions: React.FC = () => {
 
     const excludedColumns = ['userId', 'type', 'description', 'image', 'payment_method', 'childTable'];
     const firstColumns = ['category']; // Ensure only existing columns are first
+    // const lastColumns = ['remarks'];
 
     // Extract all columns while excluding unwanted ones
     const allKeys = Array.from(
@@ -178,16 +168,10 @@ const Transactions: React.FC = () => {
             case "category":
                 return <span className="italic">{value}</span>;
             default:
+                if (Array.isArray(value)) {
+                    return <span>{value.join(', ')}</span>;
+                }
                 if (typeof value === 'object') {
-                    if (Array.isArray(value)) {
-                        return (
-                            <ul className="list-disc pl-4">
-                                {value.map((item, idx) => (
-                                    <li key={idx}>{JSON.stringify(item)}</li>
-                                ))}
-                            </ul>
-                        );
-                    }
                     return (
                         <div className="text-xs text-gray-700 space-y-1">
                             {Object.entries(value).map(([subKey, subValue], idx) => (
@@ -317,7 +301,8 @@ const Transactions: React.FC = () => {
 
                                                 {expandedRow === transaction.id && (
                                                     <tr className="bg-gray-100">
-                                                        <td colSpan={7} className="border border-gray-400 p-4">
+                                                        <td colSpan={orderedColumns.length + 2} className="border border-gray-400 p-4">
+
                                                             <div className="flex items-center space-x-4">
                                                                 <TableImageRenderer method={transaction.payment_method} />
                                                                 <div>{transaction.payment_method} </div>
@@ -340,9 +325,7 @@ const Transactions: React.FC = () => {
 
                 {/* Rows per page selection and Pagination centered */}
                 <div className="flex flex-col items-center mb-4">
-                    {/* Rows per page selection and Pagination in the same line */}
                     <div className="flex items-center justify-center flex-wrap gap-4">
-                        {/* Rows per page selection */}
                         <div className="flex items-center">
                             <label htmlFor="rowsPerPage" className="mr-2">Rows per page:</label>
                             <select

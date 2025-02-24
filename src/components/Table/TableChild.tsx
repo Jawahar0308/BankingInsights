@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 
 interface RelatedTransaction {
-    id: number;
-    date: string;
-    amount: number;
-    type: string;
-    status: string;
-    description: string;
+    [key: string]: any; // Allow dynamic properties
 }
 
 interface TableChildProps {
@@ -49,27 +44,23 @@ const TableChild: React.FC<TableChildProps> = ({ relatedTransactions }) => {
                 <table className="table-auto w-full border-collapse border border-gray-400">
                     <thead>
                         <tr className="bg-gray-200">
-                            <th className="px-4 py-2 border border-gray-400">ID</th>
-                            <th className="px-4 py-2 border border-gray-400">Month</th>
-                            <th className="px-4 py-2 border border-gray-400">Year</th>
-                            <th className="px-4 py-2 border border-gray-400">Amount</th>
-                            <th className="px-4 py-2 border border-gray-400">Type</th>
-                            <th className="px-4 py-2 border border-gray-400">Status</th>
+                            {relatedTransactions.length > 0 &&
+                                Object.keys(relatedTransactions[0]).map((key) => (
+                                    <th key={key} className="px-4 py-2 border border-gray-400 capitalize">
+                                        {key}
+                                    </th>
+                                ))
+                            }
                         </tr>
                     </thead>
                     <tbody>
                         {relatedTransactions.map((relTrans) => (
                             <tr key={relTrans.id} className="text-center odd:bg-white even:bg-gray-50">
-                                <td className="px-4 py-2 border border-gray-400">{relTrans.id}</td>
-                                <td className="px-3 py-1 border border-gray-400">
-                                    {new Date(relTrans.date).toLocaleString("en-US", { month: "long" })}
-                                </td>
-                                <td className="px-3 py-1 border border-gray-400">
-                                    {new Date(relTrans.date).getFullYear()}
-                                </td>
-                                <td className="px-4 py-2 border border-gray-400">₹{relTrans.amount}</td>
-                                <td className="px-4 py-2 border border-gray-400">{relTrans.type}</td>
-                                <td className="px-4 py-2 border border-gray-400">{relTrans.status}</td>
+                                {Object.entries(relTrans).map(([key, value]) => (
+                                    <td key={key} className="px-4 py-2 border border-gray-400">
+                                        {Array.isArray(value) ? value.join(', ') : value}
+                                    </td>
+                                ))}
                             </tr>
                         ))}
                     </tbody>

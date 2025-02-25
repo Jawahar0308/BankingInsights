@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from 'react-redux';
-import { setRowOrder } from '../../redux/slices/tableSlice';
+import { setRowOrder } from '../../redux/slices/transactionsSlice';
 
 export interface DragDropHandlers {
     onDragStart: (e: React.DragEvent<HTMLTableRowElement>, id: number) => void;
@@ -16,14 +16,13 @@ export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) =>
     const [draggedId, setDraggedId] = useState<number | null>(null);
 
     useEffect(() => {
-        setItems(currentState); // Ensure items are updated after sorting
-        dispatch(setRowOrder(currentState.map(item => item.id))); // Sync row order with Redux
-    }, [currentState]);
+        if (JSON.stringify(items) !== JSON.stringify(currentState)) {
+            setItems(currentState);
+            dispatch(setRowOrder(currentState.map(item => item.id)));
+        }
+    }, [currentState, dispatch]);
 
     const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, id: number) => {
-        console.log("Drag started for item:", id); // Log the dragged item ID
-        console.log("Current items:", items); // Log current items state
-        console.log("Drag started for item:", id); // Log the dragged item ID
         e.stopPropagation();
         e.dataTransfer.effectAllowed = "move";
         e.dataTransfer.setData("text/plain", id.toString());
@@ -52,14 +51,16 @@ export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) =>
     };
 
     const handleDrop = (e: React.DragEvent<HTMLTableRowElement>, targetId: number) => {
-        console.log("Dropped item:", draggedId, "on target:", targetId); // Log the drop action
-        console.log("Current items before drop:", items); // Log items before drop
-        console.log("Dropped item:", draggedId, "on target:", targetId); // Log the drop action
+        console.log("Dropped item ID:", targetId); // Debug log
+        console.log("Dragged item ID:", draggedId); // Debug log
+
         e.preventDefault();
         e.stopPropagation();
         const sourceId = parseInt(e.dataTransfer.getData("text/plain"), 10);
 
         if (!isNaN(sourceId) && sourceId !== targetId) {
+            console.log("Source ID:", sourceId); // Debug log
+
             const newItems = [...items];
             const sourceIndex = newItems.findIndex((item) => item.id === sourceId);
             const targetIndex = newItems.findIndex((item) => item.id === targetId);
@@ -74,7 +75,6 @@ export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) =>
             newItems.splice(insertBefore ? targetIndex : targetIndex + 1, 0, movedItem);
 
             setItems(newItems);
-            dispatch(setRowOrder(newItems.map(item => item.id))); // Update row order in Redux
             dispatch(setRowOrder(newItems.map(item => item.id))); // Update row order in Redux
             onReorder(newItems); // Notify parent of the new order
         }

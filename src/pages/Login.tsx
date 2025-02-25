@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { login, markAsExistingUser } from "../redux/slices/authSlice";
+// import { useDispatch } from "react-redux";
+// import { login, markAsExistingUser } from "../redux/slices/authSlice";
 import users from "../data/json/users.json";
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleLogin = (e: React.FormEvent) => {
@@ -36,11 +36,11 @@ const Login: React.FC = () => {
         );
 
         if (registeredUser) {
-            dispatch(login({
-                email: email,
-                isNewUser: false
-            }));
-            dispatch(markAsExistingUser());
+            // dispatch(login({
+            //     email: email,
+            //     isNewUser: false
+            // }));
+            // dispatch(markAsExistingUser());
             navigate("/dashboard");
         } else {
             setErrors({ email: 'Invalid email or password', password: 'Invalid email or password' });

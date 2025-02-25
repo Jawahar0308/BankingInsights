@@ -1,6 +1,4 @@
 export const filterTransactions = (transactions: any[], searchTerm: string, columnFilters: Record<string, string>) => {
-    console.log("Filtering transactions with searchTerm:", searchTerm);
-    console.log("Current column filters:", columnFilters);
 
     return transactions.filter(transaction => {
         // Apply global search

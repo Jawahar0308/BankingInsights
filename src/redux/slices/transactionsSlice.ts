@@ -1,45 +1,49 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Transaction } from '../../types/transactionTypes';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TransactionsState {
-    data: Transaction[];
+    data: any[]; // Allow dynamic JSON structure
     isLoading: boolean;
     error: string | null;
+    selectedRows: string[];
+    currentPage: number;
+    rowOrder: string[];
+    originalOrder: string[];
 }
 
 const initialState: TransactionsState = {
-    data: [],
+    data: [], // Start with empty data, update dynamically
     isLoading: false,
-    error: null
+    error: null,
+    selectedRows: [],
+    currentPage: 1,
+    rowOrder: [],
+    originalOrder: [],
 };
 
 const transactionsSlice = createSlice({
-    name: 'transactions',
+    name: "transactions",
     initialState,
     reducers: {
-        setTransactions: (state, action: PayloadAction<Transaction[]>) => {
-            state.data = action.payload.map(txn => ({
-                ...txn,
-                childTable: {
-                    relatedTransactions: txn.childTable?.relatedTransactions || []
-                }
-            }));
+        setTransactions: (state, action: PayloadAction<any[]>) => {
+            state.data = action.payload; // Store any JSON structure dynamically
+            state.rowOrder = action.payload.map(txn => txn.id || ""); // Handle missing keys safely
+            state.originalOrder = [...state.rowOrder]; // Store original order
             state.isLoading = false;
             state.error = null;
-        }
-        ,
-        deleteTransaction: (state, action: PayloadAction<number>) => {
-            state.data = state.data.filter(txn => txn.id !== action.payload);
         },
-        setLoading: (state, action: PayloadAction<boolean>) => {
-            state.isLoading = action.payload;
+        selectRow: (state, action: PayloadAction<string>) => {
+            const id = action.payload;
+            if (state.selectedRows.includes(id)) {
+                state.selectedRows = state.selectedRows.filter(row => row !== id);
+            } else {
+                state.selectedRows.push(id);
+            }
         },
-        setError: (state, action: PayloadAction<string | null>) => {
-            state.error = action.payload;
-        }
+        setRowOrder: (state, action: PayloadAction<string[]>) => {
+            state.rowOrder = action.payload;
+        },
     }
 });
 
-
-export const { setTransactions, deleteTransaction, setLoading, setError } = transactionsSlice.actions;
+export const { setTransactions, selectRow, setRowOrder } = transactionsSlice.actions;
 export default transactionsSlice.reducer;

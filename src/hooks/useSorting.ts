@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { setRowOrder } from '../redux/slices/tableSlice';
+import { setRowOrder } from '../redux/slices/transactionsSlice';
 
 export const sortTransactions = (transactions: any[], config: { key: string; direction: string }) => {
     const dispatch = useDispatch();

@@ -16,8 +16,7 @@ interface TableBodyProps {
     onDrop: (e: React.DragEvent<HTMLTableRowElement>, index: number) => void;
     onDragEnd: (e: React.DragEvent<HTMLTableRowElement>) => void;
     expandedRow: number | null;
-    firstColumns: string[];
-    middleColumns: string[];
+    allKeys: string[];
     setExpandedRow: (id: number | null) => void;
 }
 
@@ -32,8 +31,7 @@ const TableBody: React.FC<TableBodyProps> = ({
     onDrop,
     onDragEnd,
     expandedRow,
-    firstColumns,
-    middleColumns,
+    allKeys,
     setExpandedRow,
 }) => {
     const renderCellWithValidation = React.useCallback((key: string, value: any): JSX.Element | null => {
@@ -91,9 +89,9 @@ const TableBody: React.FC<TableBodyProps> = ({
                         <td className="bg-white px-4 py-2 border border-gray-400" style={{ width: `${columnWidths.id}px` }}>
                             {transaction.id || "N/A"}
                         </td>
-                        {firstColumns.map((key) => (
+                        {allKeys.map((key: string) => (
                             <td
-                                className="px-4 py-2 border border-gray-400 font-bold"
+                                className="px-4 py-2 border border-gray-400"
                                 key={key}
                                 style={{
                                     width: `${columnWidths[key] || 150}px`,
@@ -103,21 +101,6 @@ const TableBody: React.FC<TableBodyProps> = ({
                                 {renderCellWithValidation(key, transaction[key])}
                             </td>
                         ))}
-
-                        {middleColumns
-                            .filter((key) => key !== "id")
-                            .map((key) => (
-                                <td
-                                    className="px-4 py-2 border border-gray-400"
-                                    key={key}
-                                    style={{
-                                        width: `${columnWidths[key] || 150}px`,
-                                        minWidth: "50px",
-                                    }}
-                                >
-                                    {renderCellWithValidation(key, transaction[key])}
-                                </td>
-                            ))}
                         <td className="px-4 py-2 border border-gray-400">
                             <TableActions
                                 transaction={transaction}
@@ -128,7 +111,7 @@ const TableBody: React.FC<TableBodyProps> = ({
                     </tr>
                     {expandedRow === transaction.id && (
                         <tr className="bg-gray-100">
-                            <td colSpan={firstColumns.length + middleColumns.length + 2} className="border border-gray-400 p-4">
+                            <td colSpan={allKeys.length + 3} className="border border-gray-400 p-4">
                                 <div className="flex items-center space-x-4">
                                     <TableImageRenderer method={transaction.payment_method} />
                                     <div>{transaction.payment_method} </div>

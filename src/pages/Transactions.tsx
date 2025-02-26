@@ -5,11 +5,16 @@ import { useDragDrop } from '../components/TableDragDrop';
 import { setTransactions } from '../redux/slices/transactionsSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import { CSVLink } from 'react-csv';
+import TableBadges from "../components/TableBadges";
+import TableImageRenderer from '../components/TableImageRenderer';
+import TableChild from '../components/TableChild';
 import TableHeader from '../Table/TableHeader';
 import transactionsData from "../data/json/transactions.json";
 import { sortTransactions } from '../hooks/useSorting';
 import { filterTransactions } from '../hooks/useFilters';
 import { paginateTransactions } from '../hooks/usePagination';
+import TableActions from '../components/TableActions';
+import TableCheckbox from '../components/TableCheckbox';
 import TableBody from '../Table/TableBody';
 
 const Transactions: React.FC = () => {
@@ -38,8 +43,7 @@ const Transactions: React.FC = () => {
         dispatch(setTransactions(reorderedTransactions));
     });
 
-    const excludedColumns = ['userId', 'type', 'description', 'image', 'payment_method', 'childTable'];
-    const firstColumns = ['category'];
+    const excludedColumns = ['id', 'userId', 'type', 'description', 'image', 'payment_method', 'childTable'];
 
     // Extract all columns while excluding unwanted ones
     const allKeys = Array.from(
@@ -136,10 +140,6 @@ const Transactions: React.FC = () => {
         }));
     };
 
-    const validFirstColumns = firstColumns.filter(key => allKeys.includes(key));
-    const middleColumns = allKeys.filter(key => !validFirstColumns.includes(key));
-    const orderedColumns = [...validFirstColumns, ...middleColumns];
-
     return (
         <>
             <div className="dashboard p-4 md:p-6 bg-gray-100 min-h-screen">
@@ -205,14 +205,13 @@ const Transactions: React.FC = () => {
                                             selectedRows={selectedRows}
                                             handleRowSelect={handleRowSelect}
                                             expandedRow={expandedRow}
-                                            firstColumns={validFirstColumns}
-                                            middleColumns={middleColumns}
                                             setExpandedRow={setExpandedRow}
                                             onDragStart={onDragStart}
                                             onDragOver={onDragOver}
                                             onDragLeave={onDragLeave}
                                             onDrop={onDrop}
                                             onDragEnd={onDragEnd}
+                                            allKeys={allKeys}
                                         />
 
                                     </table>

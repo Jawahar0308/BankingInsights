@@ -76,10 +76,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         return sortConfig.direction === "asc" ? "↑" : "↓";
     };
 
-    const orderedKeys = allKeys.includes("category")
-        ? ["category", ...allKeys.filter((key) => key !== "category")]
-        : allKeys;
-
     return (
         <thead className="w-full overflow-x-auto relative">
             <tr>
@@ -122,7 +118,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                 </th>
 
                 {/* Dynamic Columns */}
-                {orderedKeys
+                {allKeys
                     .filter((key) => !["checkbox", "id", "remarks"].includes(key))
                     .map((key) => (
                         <th

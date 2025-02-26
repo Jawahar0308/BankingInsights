@@ -1,17 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TransactionsState {
-    data: any[]; // Allow dynamic JSON structure
+    data: any[]; // Dynamic JSON structure
     isLoading: boolean;
     error: string | null;
-    selectedRows: string[];
+    selectedRows: (number | null)[]; // Store selected rows as numbers instead of strings
     currentPage: number;
-    rowOrder: string[];
-    originalOrder: string[];
+    rowOrder: number[]; // Store row order as indexes instead of IDs
+    originalOrder: number[];
 }
 
 const initialState: TransactionsState = {
-    data: [], // Start with empty data, update dynamically
+    data: [],
     isLoading: false,
     error: null,
     selectedRows: [],
@@ -25,21 +25,24 @@ const transactionsSlice = createSlice({
     initialState,
     reducers: {
         setTransactions: (state, action: PayloadAction<any[]>) => {
-            state.data = action.payload; // Store any JSON structure dynamically
-            state.rowOrder = action.payload.map(txn => txn.id || ""); // Handle missing keys safely
-            state.originalOrder = [...state.rowOrder]; // Store original order
+            state.data = action.payload;
+
+            // ✅ Store row order based on indexes instead of IDs
+            state.rowOrder = action.payload.map((_, index) => index);
+            state.originalOrder = [...state.rowOrder];
+
             state.isLoading = false;
             state.error = null;
         },
-        selectRow: (state, action: PayloadAction<string>) => {
-            const id = action.payload;
-            if (state.selectedRows.includes(id)) {
-                state.selectedRows = state.selectedRows.filter(row => row !== id);
+        selectRow: (state, action: PayloadAction<number | null>) => {
+            const index = action.payload;
+            if (state.selectedRows.includes(index)) {
+                state.selectedRows = state.selectedRows.filter(row => row !== index);
             } else {
-                state.selectedRows.push(id);
+                state.selectedRows.push(index);
             }
         },
-        setRowOrder: (state, action: PayloadAction<string[]>) => {
+        setRowOrder: (state, action: PayloadAction<number[]>) => {
             state.rowOrder = action.payload;
         },
     }

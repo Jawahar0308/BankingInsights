@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import TableSearch from "./TableSearch";
-import TableCheckbox from "./TableCheckbox";
+import TableSearch from "../components/TableSearch";
+import TableCheckbox from "../components/TableCheckbox";
 
 interface TableHeaderProps {
     sortConfig?: { key: string; direction: string } | null;
@@ -30,7 +30,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     const startWidth = useRef<number>(0);
 
     const handleMouseDown = (e: React.MouseEvent, columnKey: string) => {
-        console.log('Mouse down on column:', columnKey);
         e.preventDefault();
         resizingColumn.current = columnKey;
         startX.current = e.clientX;
@@ -41,37 +40,25 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     };
 
     const handleMouseMove = useCallback((e: MouseEvent) => {
-        if (!resizingColumn.current) {
-            console.log('No resizing column set');
-            return;
-        }
+        if (!resizingColumn.current) return;
 
         const delta = e.clientX - startX.current;
         const columnKey = resizingColumn.current!;
         const newWidth = Math.max(startWidth.current + delta, 50);
 
-        console.log('Resizing column:', columnKey, 'New width:', newWidth);
-
-        // Prevent text selection while resizing
         e.preventDefault();
         e.stopPropagation();
 
-        // Update the column width
         onColumnResize(columnKey, newWidth);
-
-        // Update the cursor style
         document.body.style.cursor = "col-resize";
         document.body.style.userSelect = "none";
         document.body.style.pointerEvents = "none";
     }, [onColumnResize]);
 
     const handleMouseUp = useCallback(() => {
-        console.log('Mouse up, ending resize');
         resizingColumn.current = null;
         document.removeEventListener("mousemove", handleMouseMove);
         document.removeEventListener("mouseup", handleMouseUp);
-
-        // Restore cursor and selection
         document.body.style.cursor = "";
         document.body.style.userSelect = "";
         document.body.style.pointerEvents = "";

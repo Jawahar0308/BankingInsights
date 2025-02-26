@@ -1,20 +1,16 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDragDrop } from '../components/Table/TableDragDrop';
-import { setTransactions, setRowOrder } from '../redux/slices/transactionsSlice';
+import { useDragDrop } from '../components/TableDragDrop';
+import { setTransactions } from '../redux/slices/transactionsSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import { CSVLink } from 'react-csv';
-import TableBadges from "../components/Table/TableBadges";
-import TableImageRenderer from '../components/Table/TableImageRenderer';
-import TableChild from '../components/Table/TableChild';
-import TableHeader from '../components/Table/TableHeader';
+import TableHeader from '../Table/TableHeader';
 import transactionsData from "../data/json/transactions.json";
 import { sortTransactions } from '../hooks/useSorting';
 import { filterTransactions } from '../hooks/useFilters';
 import { paginateTransactions } from '../hooks/usePagination';
-import TableActions from '../components/Table/TableActions';
-import TableCheckbox from '../components/Table/TableCheckbox';
+import TableBody from '../Table/TableBody';
 
 const Transactions: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -84,13 +80,12 @@ const Transactions: React.FC = () => {
         setLoading(true);
         try {
             dispatch(setTransactions(transactionsData));
-            dispatch(setRowOrder(transactionsData.map((t: Record<string, any>) => t.id.toString())));
         } catch (err) {
             setError("Failed to load transactions. Please try again later.");
         } finally {
             setLoading(false);
         }
-    }, [dispatch]);  // Only dispatch as dependency
+    }, [dispatch]);
 
 
     // Handle select all rows
@@ -103,17 +98,19 @@ const Transactions: React.FC = () => {
     }, [transactions]);
 
     // Handle individual row selection
-    const handleRowSelect = useCallback((id: number, checked: boolean) => {
+    const handleRowSelect = useCallback((id: number | null, checked: boolean) => {
         const newSelectedRows = new Set(selectedRowsRef.current);
-        checked ? newSelectedRows.add(id) : newSelectedRows.delete(id);
+        if (id !== null) {
+            checked ? newSelectedRows.add(id) : newSelectedRows.delete(id);
+        }
         selectedRowsRef.current = newSelectedRows;
         setSelectedRows(new Set(newSelectedRows));
     }, []);
 
     // Handle delete selected rows
-    const handleDeleteSelected = () => {
+    const handleDeleteSelected = useCallback(() => {
         setIsDeleteModalOpen(true);
-    };
+    }, []);
 
     // Confirm deletion of selected rows
     const confirmDelete = () => {
@@ -130,7 +127,7 @@ const Transactions: React.FC = () => {
     if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
     if (transactions.length === 0) return <div className="flex justify-center items-center h-screen text-gray-500">No transactions available</div>;
 
-    const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, sortedTransactions);
+    const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, sortedTransactions).filter(Boolean); // Ensure no null values
 
     const handleSort = (key: string) => {
         setSortConfig((prev) => ({
@@ -142,37 +139,6 @@ const Transactions: React.FC = () => {
     const validFirstColumns = firstColumns.filter(key => allKeys.includes(key));
     const middleColumns = allKeys.filter(key => !validFirstColumns.includes(key));
     const orderedColumns = [...validFirstColumns, ...middleColumns];
-
-    const renderCell = (key: string, value: any) => {
-        if (value === null || value === undefined) return <span className="text-gray-500">null</span>;
-
-        switch (key) {
-            case "amount":
-                return <span className="text-green-600 font-semibold">₹{value}</span>;
-            case "badges":
-                return <TableBadges statuses={[value?.[0]]} />;
-            case "date":
-                return <span className="font-medium">{value}</span>;
-            case "category":
-                return <span className="italic">{value}</span>;
-            default:
-                if (Array.isArray(value)) {
-                    return <span>{value.join(', ')}</span>;
-                }
-                if (typeof value === 'object') {
-                    return (
-                        <div className="text-xs text-gray-700 space-y-1">
-                            {Object.entries(value).map(([subKey, subValue], idx) => (
-                                <div key={idx}>
-                                    <strong>{subKey}:</strong> {subValue !== null && subValue !== undefined ? subValue.toString() : 'null'}
-                                </div>
-                            ))}
-                        </div>
-                    );
-                }
-                return <span>{value.toString()}</span>;
-        }
-    };
 
     return (
         <>
@@ -233,108 +199,22 @@ const Transactions: React.FC = () => {
                                             allKeys={allKeys}
                                         />
 
-                                        <tbody className="w-full">
-                                            {currentTransactions.map((transaction) => (
-                                                <React.Fragment key={transaction.id}>
-                                                    <tr
-                                                        className="text-center odd:bg-white even:bg-gray-50 cursor-move"
-                                                        draggable
-                                                        onDragStart={(e) => onDragStart(e, transaction.id)}
-                                                        onDragOver={onDragOver}
-                                                        onDragLeave={onDragLeave}
-                                                        onDrop={(e) => onDrop(e, transaction.id)}
-                                                        onDragEnd={onDragEnd}
-                                                    >
-                                                        {/* Sticky Checkbox Column */}
-                                                        <td
-                                                            className={`${isDeleteModalOpen ? "z-0" : "sticky left-0 z-10"
-                                                                } bg-white px-4 py-2 border border-gray-400 min-w-[50px]`}
-                                                            style={{ boxShadow: "1px 0 0 0 #9ca3af" }}
-                                                        >
-                                                            <TableCheckbox
-                                                                isChecked={selectedRows.has(transaction.id)}
-                                                                onChange={(checked) => handleRowSelect(transaction.id, checked)}
-                                                            />
-                                                        </td>
+                                        <TableBody
+                                            currentTransactions={currentTransactions}
+                                            columnWidths={columnWidths}
+                                            selectedRows={selectedRows}
+                                            handleRowSelect={handleRowSelect}
+                                            expandedRow={expandedRow}
+                                            firstColumns={validFirstColumns}
+                                            middleColumns={middleColumns}
+                                            setExpandedRow={setExpandedRow}
+                                            onDragStart={onDragStart}
+                                            onDragOver={onDragOver}
+                                            onDragLeave={onDragLeave}
+                                            onDrop={onDrop}
+                                            onDragEnd={onDragEnd}
+                                        />
 
-                                                        <td
-                                                            className={`${isDeleteModalOpen ? "z-0" : "sticky left-[50px] z-10"
-                                                                } bg-white px-4 py-2 border border-gray-400`}
-                                                            style={{
-                                                                width: `${columnWidths.id}px`,
-                                                                boxShadow: "1px 0 0 0 #9ca3af",
-                                                                minWidth: "50px",
-                                                            }}
-                                                        >
-                                                            {transaction.id}
-                                                        </td>
-
-                                                        {/* Other Columns */}
-                                                        {firstColumns.map((key) => (
-                                                            <td
-                                                                className="px-4 py-2 border border-gray-400 font-bold"
-                                                                key={key}
-                                                                style={{
-                                                                    width: `${columnWidths[key] || 150}px`, // Default width if missing
-                                                                    minWidth: "50px",
-                                                                }}
-                                                            >
-                                                                {renderCell(key, transaction[key])}
-                                                            </td>
-                                                        ))}
-
-                                                        {/* Middle Columns (Dynamically Arranged) */}
-                                                        {middleColumns
-                                                            .filter((key) => key !== "id") // Exclude 'id'
-                                                            .map((key) => (
-                                                                <td
-                                                                    className="px-4 py-2 border border-gray-400"
-                                                                    key={key}
-                                                                    style={{
-                                                                        width: `${columnWidths[key] || 150}px`, // Default width if missing
-                                                                        minWidth: "50px",
-                                                                    }}
-                                                                >
-                                                                    {renderCell(key, transaction[key])}
-                                                                </td>
-                                                            ))}
-
-                                                        <td
-                                                            className="px-4 py-2 border border-gray-400"
-                                                            style={{
-                                                                width: `${columnWidths.remarks || 150}px`,
-                                                                minWidth: "50px",
-                                                            }}
-                                                        >
-                                                            <TableActions
-                                                                transaction={transaction}
-                                                                isExpanded={expandedRow === transaction.id}
-                                                                onToggleExpand={(id) =>
-                                                                    setExpandedRow(expandedRow === id ? null : id)
-                                                                }
-                                                            />
-                                                        </td>
-                                                    </tr>
-
-                                                    {expandedRow === transaction.id && (
-                                                        <tr className="bg-gray-100">
-                                                            <td colSpan={orderedColumns.length + 2} className="border border-gray-400 p-4">
-                                                                <div className="flex items-center space-x-4">
-                                                                    <TableImageRenderer method={transaction.payment_method} />
-                                                                    <div>{transaction.payment_method} </div>
-                                                                </div>
-                                                                <div className="flex justify-start mt-2">
-                                                                    <TableBadges statuses={transaction.badges} />
-                                                                </div>
-                                                                <TableChild
-                                                                    relatedTransactions={transaction.childTable?.relatedTransactions ?? []}
-                                                                />
-                                                            </td>
-                                                        </tr>
-                                                    )}
-                                                </React.Fragment>
-                                            ))}
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>

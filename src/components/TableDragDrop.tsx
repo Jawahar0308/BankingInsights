@@ -1,34 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from 'react-redux';
-import { setRowOrder } from '../../redux/slices/transactionsSlice';
+import { setRowOrder } from '../redux/slices/transactionsSlice';
 
 export interface DragDropHandlers {
-    onDragStart: (e: React.DragEvent<HTMLTableRowElement>, id: number) => void;
+    onDragStart: (e: React.DragEvent<HTMLTableRowElement>, index: number) => void;
     onDragOver: (e: React.DragEvent<HTMLTableRowElement>) => void;
     onDragLeave: (e: React.DragEvent<HTMLTableRowElement>) => void;
-    onDrop: (e: React.DragEvent<HTMLTableRowElement>, targetId: number) => void;
+    onDrop: (e: React.DragEvent<HTMLTableRowElement>, targetIndex: number) => void;
     onDragEnd: (e: React.DragEvent<HTMLTableRowElement>) => void;
 }
 
 export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) => void) => {
     const dispatch = useDispatch();
     const [items, setItems] = useState(currentState);
-    const [draggedId, setDraggedId] = useState<number | null>(null);
+    const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
     useEffect(() => {
         if (JSON.stringify(items) !== JSON.stringify(currentState)) {
             setItems(currentState);
-            dispatch(setRowOrder(currentState.map(item => item.id)));
+            dispatch(setRowOrder(currentState.map((_, index) => index)));
+
         }
     }, [currentState, dispatch]);
 
-    const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, id: number) => {
+    const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+        if (index === undefined || isNaN(index)) {
+            console.error("Invalid drag: Undefined index", index);
+            return;
+        }
+
         e.stopPropagation();
         e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", id.toString());
-        setDraggedId(id);
+        e.dataTransfer.setData("rowIndex", index.toString());  // Store index, not ID
+
+        setDraggedIndex(index);
         e.currentTarget.classList.add("dragging");
         document.body.style.cursor = "grabbing";
+        console.log("Dragging Row Index:", index);
     };
 
     const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>) => {
@@ -50,41 +58,40 @@ export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) =>
         e.currentTarget.classList.remove("drag-over-top", "drag-over-bottom");
     };
 
-    const handleDrop = (e: React.DragEvent<HTMLTableRowElement>, targetId: number) => {
-        console.log("Dropped item ID:", targetId); // Debug log
-        console.log("Dragged item ID:", draggedId); // Debug log
-
+    const handleDrop = (e: React.DragEvent<HTMLTableRowElement>, targetIndex: number) => {
         e.preventDefault();
         e.stopPropagation();
-        const sourceId = parseInt(e.dataTransfer.getData("text/plain"), 10);
 
-        if (!isNaN(sourceId) && sourceId !== targetId) {
-            console.log("Source ID:", sourceId); // Debug log
-
-            const newItems = [...items];
-            const sourceIndex = newItems.findIndex((item) => item.id === sourceId);
-            const targetIndex = newItems.findIndex((item) => item.id === targetId);
-
-            if (sourceIndex === -1 || targetIndex === -1) return;
-
-            const rect = e.currentTarget.getBoundingClientRect();
-            const offset = e.clientY - rect.top;
-            const insertBefore = offset < rect.height / 2;
-
-            const [movedItem] = newItems.splice(sourceIndex, 1);
-            newItems.splice(insertBefore ? targetIndex : targetIndex + 1, 0, movedItem);
-
-            setItems(newItems);
-            dispatch(setRowOrder(newItems.map(item => item.id))); // Update row order in Redux
-            onReorder(newItems); // Notify parent of the new order
+        const rowIndexData = e.dataTransfer.getData("rowIndex");
+        if (!rowIndexData) {
+            console.error("Drop aborted: Missing rowIndex data.");
+            return;
         }
 
-        setDraggedId(null);
+        const sourceIndex = parseInt(rowIndexData, 10);
+        console.log("Source Index:", sourceIndex, " ➡ Target Index:", targetIndex);
+
+        if (isNaN(sourceIndex) || sourceIndex < 0 || sourceIndex >= items.length) {
+            console.error("Invalid source index, drop aborted.");
+            return;
+        }
+
+        if (sourceIndex !== targetIndex) {
+            const newItems = [...items];
+            const [movedItem] = newItems.splice(sourceIndex, 1);
+            newItems.splice(targetIndex, 0, movedItem);
+
+            setItems(newItems);
+            dispatch(setRowOrder(currentState.map((_, index) => index)));
+            onReorder(newItems);
+        }
+
+        setDraggedIndex(null);
         e.currentTarget.classList.remove("drag-over-top", "drag-over-bottom");
     };
 
     const handleDragEnd = (e: React.DragEvent<HTMLTableRowElement>) => {
-        setDraggedId(null);
+        setDraggedIndex(null);
         document.body.style.cursor = "";
         e.currentTarget.classList.remove("dragging");
     };
@@ -95,6 +102,6 @@ export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) =>
         onDragLeave: handleDragLeave,
         onDrop: handleDrop,
         onDragEnd: handleDragEnd,
-        draggedId,
+        draggedIndex,
     };
 };

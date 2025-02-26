@@ -1,10 +1,10 @@
 import React from "react";
-import bankTransferLogo from "../../assets/bank_transfer_logo.png";
-import creditCardLogo from "../../assets/credit_card_logo.jpeg";
-import upiLogo from "../../assets/upi_logo.png";
-import paypalLogo from "../../assets/paypal_logo.png";
-import cashLogo from "../../assets/cash_logo.png";
-import defaultLogo from "../../assets/default_logo.png";
+import bankTransferLogo from "../assets/bank_transfer_logo.png";
+import creditCardLogo from "../assets/credit_card_logo.jpeg";
+import upiLogo from "../assets/upi_logo.png";
+import paypalLogo from "../assets/paypal_logo.png";
+import cashLogo from "../assets/cash_logo.png";
+import defaultLogo from "../assets/default_logo.png";
 
 interface TableImageRendererProps {
     method: string;

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TransactionsState {
-    data: any[]; // Dynamic JSON structure
+    data: Record<string, any>[];
     isLoading: boolean;
     error: string | null;
     selectedRows: (number | null)[]; // Store selected rows as numbers instead of strings
@@ -24,10 +24,8 @@ const transactionsSlice = createSlice({
     name: "transactions",
     initialState,
     reducers: {
-        setTransactions: (state, action: PayloadAction<any[]>) => {
+        setTransactions: (state, action: PayloadAction<Record<string, any>[]>) => {
             state.data = action.payload;
-
-            // ✅ Store row order based on indexes instead of IDs
             state.rowOrder = action.payload.map((_, index) => index);
             state.originalOrder = [...state.rowOrder];
 

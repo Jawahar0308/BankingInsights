@@ -80,15 +80,21 @@ const TableBody: React.FC<TableBodyProps> = ({
                         onDrop={(e) => onDrop(e, index)}
                         onDragEnd={onDragEnd}
                     >
-                        <td className="bg-white px-4 py-2 border border-gray-400 min-w-[50px]">
+                        <td
+                            className="bg-white px-4 py-2 border border-gray-400 min-w-[50px] sticky left-0 z-10"
+                        >
                             <TableCheckbox
                                 isChecked={selectedRows.has(transaction.id || 0)}
                                 onChange={(checked) => handleRowSelect(transaction.id || 0, checked)}
                             />
                         </td>
-                        <td className="bg-white px-4 py-2 border border-gray-400" style={{ width: `${columnWidths.id}px` }}>
+                        <td
+                            className="bg-white px-4 py-2 border border-gray-400 sticky left-[50px] z-10"
+                            style={{ width: `${columnWidths.id}px` }}
+                        >
                             {transaction.id || "N/A"}
                         </td>
+
                         {allKeys.map((key: string) => (
                             <td
                                 className="px-4 py-2 border border-gray-400"

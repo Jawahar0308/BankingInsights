@@ -2,8 +2,6 @@ import { useDispatch } from "react-redux";
 import { setRowOrder } from "../redux/slices/transactionsSlice";
 
 export const sortTransactions = (transactions: any[], config: { key: string; direction: string }) => {
-    const dispatch = useDispatch();
-
     const sortedTransactions = [...transactions].sort((a, b) => {
         let valueA = a[config.key] ?? "";
         let valueB = b[config.key] ?? "";
@@ -17,6 +15,6 @@ export const sortTransactions = (transactions: any[], config: { key: string; dir
         return 0;
     });
 
-    dispatch(setRowOrder(sortedTransactions.map((_, index) => index)));
+    // Removed dispatch of setRowOrder to avoid conflicts with drag-and-drop functionality
     return sortedTransactions;
 };

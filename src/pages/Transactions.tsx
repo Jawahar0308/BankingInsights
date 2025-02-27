@@ -5,16 +5,11 @@ import { useDragDrop } from '../components/TableDragDrop';
 import { setTransactions } from '../redux/slices/transactionsSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import { CSVLink } from 'react-csv';
-import TableBadges from "../components/TableBadges";
-import TableImageRenderer from '../components/TableImageRenderer';
-import TableChild from '../components/TableChild';
 import TableHeader from '../Table/TableHeader';
 import transactionsData from "../data/json/transactions.json";
 import { sortTransactions } from '../hooks/useSorting';
 import { filterTransactions } from '../hooks/useFilters';
 import { paginateTransactions } from '../hooks/usePagination';
-import TableActions from '../components/TableActions';
-import TableCheckbox from '../components/TableCheckbox';
 import TableBody from '../Table/TableBody';
 
 const Transactions: React.FC = () => {
@@ -39,7 +34,7 @@ const Transactions: React.FC = () => {
         sortTransactions(filteredTransactions, sortConfig) :
         filteredTransactions;
 
-    const { onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd } = useDragDrop(sortedTransactions, (reorderedTransactions) => {
+    const { onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd } = useDragDrop(filteredTransactions, (reorderedTransactions) => {
         dispatch(setTransactions(reorderedTransactions));
     });
 
@@ -131,7 +126,9 @@ const Transactions: React.FC = () => {
     if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
     if (transactions.length === 0) return <div className="flex justify-center items-center h-screen text-gray-500">No transactions available</div>;
 
-    const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, sortedTransactions).filter(Boolean); // Ensure no null values
+    const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, filteredTransactions).filter(Boolean); // Ensure no null values
+
+    console.log("Current Transactions:", currentTransactions); // Debugging log
 
     const handleSort = (key: string) => {
         setSortConfig((prev) => ({

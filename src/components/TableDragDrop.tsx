@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux'; // Reintroducing dispatch for row order updates
 import { setRowOrder } from '../redux/slices/transactionsSlice';
 
 export interface DragDropHandlers {
@@ -11,17 +11,20 @@ export interface DragDropHandlers {
 }
 
 export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) => void) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch(); // Reintroducing dispatch for row order updates
     const [items, setItems] = useState(currentState);
     const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
     useEffect(() => {
         if (JSON.stringify(items) !== JSON.stringify(currentState)) {
             setItems(currentState);
-            dispatch(setRowOrder(currentState.map((_, index) => index)));
-
         }
-    }, [currentState, dispatch]);
+    }, [currentState]);
+
+    useEffect(() => {
+        dispatch(setRowOrder(items.map((_, index) => index))); // Dispatching row order updates
+    }, [items, dispatch]);
+
 
     const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
         if (index === undefined || isNaN(index)) {
@@ -63,31 +66,19 @@ export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) =>
         e.stopPropagation();
 
         const rowIndexData = e.dataTransfer.getData("rowIndex");
-        if (!rowIndexData) {
-            console.error("Drop aborted: Missing rowIndex data.");
-            return;
-        }
+        if (!rowIndexData) return;
 
         const sourceIndex = parseInt(rowIndexData, 10);
-        console.log("Source Index:", sourceIndex, " ➡ Target Index:", targetIndex);
-
-        if (isNaN(sourceIndex) || sourceIndex < 0 || sourceIndex >= items.length) {
-            console.error("Invalid source index, drop aborted.");
-            return;
-        }
-
         if (sourceIndex !== targetIndex) {
             const newItems = [...items];
             const [movedItem] = newItems.splice(sourceIndex, 1);
             newItems.splice(targetIndex, 0, movedItem);
 
-            setItems(newItems);
-            dispatch(setRowOrder(currentState.map((_, index) => index)));
             onReorder(newItems);
+            dispatch(setRowOrder(newItems.map((_, index) => index)));
         }
 
         setDraggedIndex(null);
-        e.currentTarget.classList.remove("drag-over-top", "drag-over-bottom");
     };
 
     const handleDragEnd = (e: React.DragEvent<HTMLTableRowElement>) => {

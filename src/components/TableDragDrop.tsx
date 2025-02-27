@@ -68,10 +68,7 @@ export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) =>
             newItems.splice(targetIndex, 0, movedItem);
 
             // Update orderIndex after dragging
-            const reorderedItems = newItems.map((item, index) => ({
-                ...item,
-                orderIndex: index,
-            }));
+            const reorderedItems = newItems; // Remove orderIndex assignment
 
             setItems(reorderedItems); // Update local state
             onReorder(reorderedItems); // Notify parent component

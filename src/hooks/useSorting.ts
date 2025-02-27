@@ -1,6 +1,3 @@
-import { useDispatch } from "react-redux";
-import { setRowOrder } from "../redux/slices/transactionsSlice";
-
 export const sortTransactions = (transactions: any[], config: { key: string; direction: string }) => {
     const sortedTransactions = [...transactions].sort((a, b) => {
         let valueA = a[config.key] ?? "";

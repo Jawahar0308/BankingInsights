@@ -20,7 +20,7 @@ const imageMap: Record<string, string> = {
 };
 
 const TableImageRenderer: React.FC<TableImageRendererProps> = ({ method }) => {
-    // Convert method to title case to match imageMap keys
+    console.log("Rendering image for method:", method);
     const formattedMethod = method
         .toLowerCase()
         .split(' ')

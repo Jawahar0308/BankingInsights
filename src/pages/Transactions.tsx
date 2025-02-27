@@ -46,8 +46,9 @@ const Transactions: React.FC = () => {
     ).filter(key => !excludedColumns.includes(key));
 
     const [columnWidths, setColumnWidths] = useState<Record<string, number>>({
-        checkbox: 50, // Fixed width
-        id: 100      // Fixed width
+        checkbox: 50,
+        id: 100,
+        remarks: 150
     });
 
     const handleColumnResize = useCallback((key: string, newWidth: number) => {

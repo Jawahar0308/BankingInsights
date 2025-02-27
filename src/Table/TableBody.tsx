@@ -34,7 +34,7 @@ const TableBody: React.FC<TableBodyProps> = ({
     allKeys,
     setExpandedRow,
 }) => {
-    const renderCellWithValidation = React.useCallback((key: string, value: any): JSX.Element | null => {
+    const renderCell = React.useCallback((key: string, value: any): JSX.Element | null => {
         if (value === null || value === undefined) return <span className="text-gray-500">N/A</span>;
 
         switch (key) {
@@ -81,7 +81,7 @@ const TableBody: React.FC<TableBodyProps> = ({
                         onDragEnd={onDragEnd}
                     >
                         <td
-                            className="bg-white px-4 py-2 border border-gray-400 min-w-[50px] sticky left-0 z-10"
+                            className="bg-white px-4 py-2 border border-gray-400 min-w-[50px] sticky left-0 z-10 shadow-[1px_0_0_0_#9ca3af]"
                         >
                             <TableCheckbox
                                 isChecked={selectedRows.has(transaction.id || 0)}
@@ -89,7 +89,7 @@ const TableBody: React.FC<TableBodyProps> = ({
                             />
                         </td>
                         <td
-                            className="bg-white px-4 py-2 border border-gray-400 sticky left-[50px] z-10"
+                            className="bg-white px-4 py-2 border border-gray-400 sticky left-[50px] z-10 shadow-[1px_0_0_0_#9ca3af]"
                             style={{ width: `${columnWidths.id}px` }}
                         >
                             {transaction.id || "N/A"}
@@ -104,7 +104,7 @@ const TableBody: React.FC<TableBodyProps> = ({
                                     minWidth: "50px",
                                 }}
                             >
-                                {renderCellWithValidation(key, transaction[key])}
+                                {renderCell(key, transaction[key])}
                             </td>
                         ))}
                         <td className="px-4 py-2 border border-gray-400">
@@ -112,7 +112,9 @@ const TableBody: React.FC<TableBodyProps> = ({
                                 transaction={transaction}
                                 isExpanded={expandedRow === transaction.id}
                                 onToggleExpand={() => setExpandedRow(expandedRow === transaction.id ? null : transaction.id)}
-                            />
+                                onEdit={function (): void {
+                                    throw new Error("Function not implemented.");
+                                }} />
                         </td>
                     </tr>
                     {expandedRow === transaction.id && (

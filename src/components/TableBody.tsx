@@ -77,7 +77,7 @@ const TableBody: React.FC<TableBodyProps> = ({
             {/* <div className="overflow-y-auto max-h-[500px] relative"> */}
             <tbody className="w-full" style={{ position: 'static' }}>
                 {currentTransactions.map((transaction, index) => (
-                    <React.Fragment key={transaction.orderIndex}>
+                    <React.Fragment key={transaction.id || `${transaction.id}-${index}`}>
                         <tr
                             className="text-center odd:bg-white even:bg-gray-50 cursor-move"
                             draggable

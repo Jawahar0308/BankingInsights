@@ -11,6 +11,7 @@ import { sortTransactions } from '../hooks/useSorting';
 import { filterTransactions } from '../hooks/useFilters';
 import { paginateTransactions } from '../hooks/usePagination';
 import TableBody from '../Table/TableBody';
+import EditDrawer from "../components/EditDrawer";
 
 const Transactions: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -27,6 +28,8 @@ const Transactions: React.FC = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const selectedRowsRef = useRef<Set<number>>(new Set());
     const [selectedRows, setSelectedRows] = useState<Set<number>>(selectedRowsRef.current);
+    const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+    const [isEditOpen, setIsEditOpen] = useState(false);;
 
     // Filter, sort and paginate transactions
     const filteredTransactions = filterTransactions(transactions, searchTerm, columnFilters);
@@ -138,6 +141,17 @@ const Transactions: React.FC = () => {
         }));
     };
 
+    const handleEdit = (index: number, field: string, value: any) => {
+        dispatch(setTransactions(transactions.map((txn, i) =>
+            i === index ? { ...txn, [field]: value } : txn
+        )));
+    };
+
+    const handleEditDrawer = (index: number) => {
+        setSelectedRowIndex(index);
+        setIsEditOpen(true);
+    };
+
     return (
         <>
             <div className="dashboard p-4 md:p-6 bg-gray-100 min-h-screen">
@@ -210,6 +224,8 @@ const Transactions: React.FC = () => {
                                             onDrop={onDrop}
                                             onDragEnd={onDragEnd}
                                             allKeys={allKeys}
+                                            handleEdit={handleEdit}
+                                            onEditDrawer={handleEditDrawer}
                                         />
 
                                     </table>
@@ -255,8 +271,6 @@ const Transactions: React.FC = () => {
                         </div>
                     </div>
                 </div>
-
-
             </div>
 
             <DeleteConfirmationModal
@@ -265,6 +279,21 @@ const Transactions: React.FC = () => {
                 onConfirm={confirmDelete}
                 selectedCount={selectedRows.size}
             />
+            <EditDrawer
+                isOpen={isEditOpen}
+                onClose={() => setIsEditOpen(false)}
+                rowData={selectedRowIndex !== null ? transactions[selectedRowIndex] : null}
+                onUpdate={(updatedData) => {
+                    if (selectedRowIndex !== null) {
+                        dispatch(setTransactions(transactions.map((txn, i) =>
+                            i === selectedRowIndex ? updatedData : txn
+                        )));
+                        setIsEditOpen(false);
+                    }
+                }}
+            />
+
+
         </>
     );
 };

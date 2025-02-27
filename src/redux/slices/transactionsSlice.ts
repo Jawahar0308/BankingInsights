@@ -20,11 +20,16 @@ const initialState: TransactionsState = {
     originalOrder: [],
 };
 
+console.log("Initial transactions state:", initialState); // Debugging log for initial state
+
+
 const transactionsSlice = createSlice({
     name: "transactions",
     initialState,
     reducers: {
         setTransactions: (state, action: PayloadAction<Record<string, any>[]>) => {
+            console.log("Setting transactions:", action.payload); // Debugging log for incoming transactions
+            console.log("Setting transactions:", action.payload); // Debugging log for incoming transactions
             state.data = action.payload;
             state.rowOrder = action.payload.map((_, index) => index);
             state.originalOrder = [...state.rowOrder];

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import TableSearch from "../components/TableSearch";
-import TableCheckbox from "../components/TableCheckbox";
+import TableSearch from "./TableSearch";
+import TableCheckbox from "./TableCheckbox";
 
 interface TableHeaderProps {
     sortConfig?: { key: string; direction: string } | null;
@@ -201,5 +201,4 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </thead>
     );
 };
-
 export default TableHeader;

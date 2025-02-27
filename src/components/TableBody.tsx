@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import TableCheckbox from "../components/TableCheckbox";
-import TableActions from "../components/TableActions";
-import TableImageRenderer from "../components/TableImageRenderer";
-import TableBadges from "../components/TableBadges";
-import TableChild from "../components/TableChild";
+import TableCheckbox from "./TableCheckbox";
+import TableActions from "./TableActions";
+import TableImageRenderer from "./TableImageRenderer";
+import TableBadges from "./TableBadges";
+import TableChild from "./TableChild";
 
 interface TableBodyProps {
     currentTransactions: any[];
     columnWidths: Record<string, number>;
     selectedRows: Set<number>;
-    handleRowSelect: (id: number, checked: boolean) => void;
+    handleRowSelect: (index: number, checked: boolean) => void;
     onDragStart: (e: React.DragEvent<HTMLTableRowElement>, index: number) => void;
     onDragOver: (e: React.DragEvent<HTMLTableRowElement>) => void;
     onDragLeave: (e: React.DragEvent<HTMLTableRowElement>) => void;
@@ -74,9 +74,10 @@ const TableBody: React.FC<TableBodyProps> = ({
 
     return (
         <>
-            <tbody className="w-full">
+            {/* <div className="overflow-y-auto max-h-[500px] relative"> */}
+            <tbody className="w-full" style={{ position: 'static' }}>
                 {currentTransactions.map((transaction, index) => (
-                    <React.Fragment key={transaction.id || `generated-${index}`}>
+                    <React.Fragment key={transaction.orderIndex}>
                         <tr
                             className="text-center odd:bg-white even:bg-gray-50 cursor-move"
                             draggable
@@ -91,8 +92,8 @@ const TableBody: React.FC<TableBodyProps> = ({
                         >
                             <td className="bg-white px-4 py-2 border border-gray-400 min-w-[50px] sticky left-0 z-10 shadow-[1px_0_0_0_#9ca3af]">
                                 <TableCheckbox
-                                    isChecked={selectedRows.has(transaction.id || 0)}
-                                    onChange={(checked) => handleRowSelect(transaction.id || 0, checked)}
+                                    isChecked={selectedRows.has(index)}
+                                    onChange={(checked) => handleRowSelect(index, checked)}
                                 />
                             </td>
                             <td
@@ -118,12 +119,12 @@ const TableBody: React.FC<TableBodyProps> = ({
                                 <TableActions
                                     transaction={transaction}
                                     onEdit={() => onEditDrawer(index)}
-                                    isExpanded={expandedRow === transaction.id}
-                                    onToggleExpand={() => setExpandedRow(expandedRow === transaction.id ? null : transaction.id)}
+                                    isExpanded={expandedRow === index}
+                                    onToggleExpand={() => setExpandedRow(expandedRow === index ? null : index)}
                                 />
                             </td>
                         </tr>
-                        {expandedRow === transaction.id && (
+                        {expandedRow === index && (
                             <tr className="bg-gray-100">
                                 <td colSpan={allKeys.length + 3} className="border border-gray-400 p-4">
                                     <div className="flex items-center space-x-4">
@@ -142,6 +143,7 @@ const TableBody: React.FC<TableBodyProps> = ({
                     </React.Fragment>
                 ))}
             </tbody>
+            {/* </div> */}
         </>
     );
 };

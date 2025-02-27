@@ -61,7 +61,6 @@
         }
     },
     {
-        "id": 3,
         "userId": 1,
         "type": "debit",
         "amount": 20.0,

@@ -1,17 +1,13 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDragDrop } from '../components/TableDragDrop';
 import { setTransactions } from '../redux/slices/transactionsSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import { CSVLink } from 'react-csv';
-import TableHeader from '../Table/TableHeader';
 import transactionsData from "../data/json/transactions.json";
-import { sortTransactions } from '../hooks/useSorting';
 import { filterTransactions } from '../hooks/useFilters';
-import { paginateTransactions } from '../hooks/usePagination';
-import TableBody from '../Table/TableBody';
 import EditDrawer from "../components/EditDrawer";
+import TransactionsTable from '../Table/index';
 
 const Transactions: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -29,39 +25,10 @@ const Transactions: React.FC = () => {
     const selectedRowsRef = useRef<Set<number>>(new Set());
     const [selectedRows, setSelectedRows] = useState<Set<number>>(selectedRowsRef.current);
     const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
-    const [isEditOpen, setIsEditOpen] = useState(false);;
+    const [isEditOpen, setIsEditOpen] = useState(false);
 
-    // Filter, sort and paginate transactions
+    // Get filtered transactions for pagination calculation
     const filteredTransactions = filterTransactions(transactions, searchTerm, columnFilters);
-    const sortedTransactions = sortConfig ?
-        sortTransactions(filteredTransactions, sortConfig) :
-        filteredTransactions;
-
-    const { onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd } = useDragDrop(filteredTransactions, (reorderedTransactions) => {
-        dispatch(setTransactions(reorderedTransactions));
-    });
-
-    const excludedColumns = ['id', 'userId', 'type', 'description', 'image', 'payment_method', 'childTable'];
-
-    // Extract all columns while excluding unwanted ones
-    const allKeys = Array.from(
-        new Set(transactions.flatMap(transaction => Object.keys(transaction)))
-    ).filter(key => !excludedColumns.includes(key));
-
-    const [columnWidths, setColumnWidths] = useState<Record<string, number>>({
-        checkbox: 50,
-        id: 100,
-        remarks: 150
-    });
-
-    const handleColumnResize = useCallback((key: string, newWidth: number) => {
-        if (['checkbox', 'id'].includes(key)) return; // Prevent resizing fixed columns
-
-        setColumnWidths((prev) => ({
-            ...prev,
-            [key]: Math.max(newWidth, 150) // Ensure minimum width of 150px
-        }));
-    }, []);
 
     // Load transactions on mount
     useEffect(() => {
@@ -90,49 +57,43 @@ const Transactions: React.FC = () => {
         }
     }, [dispatch]);
 
-
-    // Handle select all rows
     const handleSelectAll = useCallback((checked: boolean) => {
-        const newSelectedRows = checked ?
-            new Set<number>(transactions.map((t: Record<string, any>) => t.id)) :
-            new Set<number>();
-        selectedRowsRef.current = newSelectedRows;
-        setSelectedRows(newSelectedRows);
-    }, [transactions]);
+        const newSelectedRows = checked
+            ? new Set<number>(filteredTransactions.map((_, index) => index)) // Use index instead of id
+            : new Set<number>();
 
-    // Handle individual row selection
-    const handleRowSelect = useCallback((id: number | null, checked: boolean) => {
-        const newSelectedRows = new Set(selectedRowsRef.current);
-        if (id !== null) {
-            checked ? newSelectedRows.add(id) : newSelectedRows.delete(id);
-        }
-        selectedRowsRef.current = newSelectedRows;
-        setSelectedRows(new Set(newSelectedRows));
+        setSelectedRows(newSelectedRows);
+        selectedRowsRef.current = newSelectedRows; // Sync with ref
+    }, [filteredTransactions]);
+
+
+    const handleRowSelect = useCallback((index: number | null, checked: boolean) => {
+        setSelectedRows((prevSelectedRows) => {
+            const newSelectedRows = new Set(prevSelectedRows);
+            if (index !== null) {
+                checked ? newSelectedRows.add(index) : newSelectedRows.delete(index);
+            }
+            selectedRowsRef.current = newSelectedRows; // Keep in sync
+            return newSelectedRows;
+        });
     }, []);
+
 
     // Handle delete selected rows
     const handleDeleteSelected = useCallback(() => {
         setIsDeleteModalOpen(true);
     }, []);
 
-    // Confirm deletion of selected rows
     const confirmDelete = () => {
-        const remainingTransactions = transactions.filter(
-            (t: Record<string, any>) => !selectedRowsRef.current.has(t.id) // Use selectedRowsRef.current
-        );
-        dispatch(setTransactions(remainingTransactions));
-        selectedRowsRef.current.clear(); // Clear the selected rows
-        setSelectedRows(new Set()); // Update state to reflect cleared selections
+        const updatedTransactions = transactions.filter((_, index) => !selectedRowsRef.current.has(index));
+
+        // Ensure state updates correctly
+        dispatch(setTransactions(updatedTransactions));
+        selectedRowsRef.current.clear(); // Clear selected rows
+        setSelectedRows(new Set()); // Update state
         setIsDeleteModalOpen(false);
     };
-    console.log("Transactions: ", transactions)
-    if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
-    if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
-    if (transactions.length === 0) return <div className="flex justify-center items-center h-screen text-gray-500">No transactions available</div>;
 
-    const currentTransactions = paginateTransactions(currentPage, transactionsPerPage, filteredTransactions).filter(Boolean); // Ensure no null values
-
-    console.log("Current Transactions:", currentTransactions); // Debugging log
 
     const handleSort = (key: string) => {
         setSortConfig((prev) => ({
@@ -151,6 +112,17 @@ const Transactions: React.FC = () => {
         setSelectedRowIndex(index);
         setIsEditOpen(true);
     };
+
+    const handleColumnFilter = (column: string, value: string) => {
+        setColumnFilters((prev) => ({
+            ...prev,
+            [column]: value,
+        }));
+    };
+
+    const isAllSelected = filteredTransactions.length > 0 &&
+        filteredTransactions.every((_, index) => selectedRows.has(index));
+
 
     return (
         <>
@@ -174,66 +146,29 @@ const Transactions: React.FC = () => {
                 </div>
 
                 {/* Transactions Table */}
-                <section className="transactions bg-white p-4 rounded-lg shadow-lg mb-6">
-                    {transactions.length === 0 ? (
-                        <div className="flex justify-center items-center h-64 text-gray-500">
-                            No transactions to display
-                        </div>
-                    ) : (
-                        <div>
-                            <div className="flex justify-between items-center mb-3">
-                                <h2 className="text-xl font-semibold">Recent Transactions</h2>
-                                <button
-                                    onClick={handleDeleteSelected}
-                                    disabled={selectedRows.size === 0}
-                                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
-                                >
-                                    Delete Selected
-                                </button>
-                            </div>
-                            <div className="w-full overflow-x-auto">
-                                <div className="relative max-h-[500px] overflow-y-auto"> {/* Set max height for vertical scrolling */}
-                                    <table className="table-auto w-full min-w-[800px] border-collapse border border-gray-400 relative">
-                                        <TableHeader
-                                            sortConfig={sortConfig}
-                                            handleSort={handleSort}
-                                            handleColumnFilter={(column, value) =>
-                                                setColumnFilters((prev) => ({
-                                                    ...prev,
-                                                    [column]: value,
-                                                }))
-                                            }
-                                            onSelectAll={handleSelectAll}
-                                            isAllSelected={selectedRows.size === transactions.length}
-                                            isModal={isDeleteModalOpen}
-                                            columnWidths={columnWidths}
-                                            onColumnResize={handleColumnResize}
-                                            allKeys={allKeys}
-                                        />
-
-                                        <TableBody
-                                            currentTransactions={currentTransactions}
-                                            columnWidths={columnWidths}
-                                            selectedRows={selectedRows}
-                                            handleRowSelect={handleRowSelect}
-                                            expandedRow={expandedRow}
-                                            setExpandedRow={setExpandedRow}
-                                            onDragStart={onDragStart}
-                                            onDragOver={onDragOver}
-                                            onDragLeave={onDragLeave}
-                                            onDrop={onDrop}
-                                            onDragEnd={onDragEnd}
-                                            allKeys={allKeys}
-                                            handleEdit={handleEdit}
-                                            onEditDrawer={handleEditDrawer}
-                                        />
-
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </section>
+                <TransactionsTable
+                    loading={loading}
+                    error={error}
+                    transactions={transactions}
+                    searchTerm={searchTerm}
+                    columnFilters={columnFilters}
+                    expandedRow={expandedRow}
+                    setExpandedRow={setExpandedRow}
+                    selectedRows={selectedRows}
+                    handleRowSelect={handleRowSelect}
+                    handleSelectAll={handleSelectAll}
+                    handleSort={handleSort}
+                    sortConfig={sortConfig}
+                    handleColumnFilter={handleColumnFilter}
+                    isDeleteModalOpen={isDeleteModalOpen}
+                    handleEdit={handleEdit}
+                    onEditDrawer={handleEditDrawer}
+                    currentPage={currentPage}
+                    transactionsPerPage={transactionsPerPage}
+                    setTransactions={(updatedTransactions) => dispatch(setTransactions(updatedTransactions))}
+                    handleDeleteSelected={handleDeleteSelected}
+                    isAllSelected={isAllSelected} // Pass this new prop
+                />
 
                 {/* Rows per page selection and Pagination centered */}
                 <div className="flex flex-col items-center mb-4">
@@ -259,7 +194,9 @@ const Transactions: React.FC = () => {
 
                         {/* Pagination */}
                         <div className="pagination flex space-x-2">
-                            {Array.from({ length: Math.ceil(filteredTransactions.length / transactionsPerPage) }).map((_, index) => (
+                            {Array.from({
+                                length: Math.ceil(filteredTransactions.length / transactionsPerPage)
+                            }).map((_, index) => (
                                 <button
                                     key={index + 1}
                                     onClick={() => setCurrentPage(index + 1)}
@@ -292,8 +229,6 @@ const Transactions: React.FC = () => {
                     }
                 }}
             />
-
-
         </>
     );
 };

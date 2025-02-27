@@ -27,19 +27,12 @@ export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) =>
 
 
     const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
-        if (index === undefined || isNaN(index)) {
-            console.error("Invalid drag: Undefined index", index);
-            return;
-        }
-
         e.stopPropagation();
         e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("rowIndex", index.toString());  // Store index, not ID
-
+        e.dataTransfer.setData("rowIndex", index.toString()); // Store `orderIndex`
         setDraggedIndex(index);
         e.currentTarget.classList.add("dragging");
         document.body.style.cursor = "grabbing";
-        console.log("Dragging Row Index:", index);
     };
 
     const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>) => {
@@ -74,12 +67,20 @@ export const useDragDrop = (currentState: any[], onReorder: (newState: any[]) =>
             const [movedItem] = newItems.splice(sourceIndex, 1);
             newItems.splice(targetIndex, 0, movedItem);
 
-            onReorder(newItems);
-            dispatch(setRowOrder(newItems.map((_, index) => index)));
+            // Update orderIndex after dragging
+            const reorderedItems = newItems.map((item, index) => ({
+                ...item,
+                orderIndex: index,
+            }));
+
+            setItems(reorderedItems); // Update local state
+            onReorder(reorderedItems); // Notify parent component
+            dispatch(setRowOrder(reorderedItems.map((_, index) => index))); // Dispatch order update
         }
 
         setDraggedIndex(null);
     };
+
 
     const handleDragEnd = (e: React.DragEvent<HTMLTableRowElement>) => {
         setDraggedIndex(null);
